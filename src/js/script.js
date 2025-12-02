@@ -30,7 +30,7 @@ btn.addEventListener("click", login);
 async function login() {
     email_input = document.querySelector(".email").value;
     password_input = document.querySelector(".password").value;
-
+    let obs = documente.querySelector(".obs")
     if (!email_input || !password_input){
       alert("digite seu email e senha")
     } else{
