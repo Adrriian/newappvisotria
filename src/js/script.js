@@ -46,9 +46,10 @@ async function login() {
       const dadossalvos = await dados.get();
       let adm = dadossalvos.data().adm;
 
-       if(dadossalvos.exist && adm === "true"){
+         
+      if (dadossalvos.exists && adm === "true") {
         window.location.href = "../pages/adm.html";
-      }else{
+      } else {
         window.location.href = "../pages/consultor.html";
       }
 
