@@ -15,19 +15,18 @@ btn.addEventListener("click", login);
 async function login(){
     email_input = document.querySelector('.email').value;
     password_input = document.querySelector(".password").value;
-    let apy_key = "napi_h1oxultl93gyplfy9bxw6titnf8x46a3jxlk1k2idu3iw2e4m1l32k6ot3cwldz0";
-let rest_apy_key = "https://ep-jolly-wildflower-ac6kwkbd.apirest.sa-east-1.aws.neon.tech/neondb/rest/v1";
+    let API_KEY = "napi_h1oxultl93gyplfy9bxw6titnf8x46a3jxlk1k2idu3iw2e4m1l32k6ot3cwldz0";
+let rest_endopoint = "https://ep-jolly-wildflower-ac6kwkbd.apirest.sa-east-1.aws.neon.tech/neondb/rest/v1";
 
 
 
     console.log("esse é o email digitado: " + email_input)
 
     try{
-        const res = await fetch(`${rest_apy_key}/${consultores}`, {
+        const res = await fetch(`${rest_endopoint}/consultores`, {
             method: "GET",
             headers:{
-                "apikey": apy_key,
-                "Authorization": `Bearer ${apy_key}`,
+                "Authorization": `Bearer ${API_KEY}`,
                 "Content-Type": "application/json"
             }
         })
