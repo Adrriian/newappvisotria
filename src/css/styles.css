@@ -22,7 +22,7 @@ body{
     justify-content: center;
     padding: 20px;
     border-radius: 5px;
-    gap: 30px;
+    gap: 20px;
    background-color: #222e5a;
 }
 .login_email,
@@ -67,8 +67,15 @@ body{
     font-size: 20px;
     color:#ff5900;
 }
-@media (max-width:650px){ 
+
+@media (max-width:650px){
+  
     .login_button{
+    font-size: 15px;
+}
+}
+@media (max-width:650px){ 
+    .obs{
     font-size: 15px;
 }
 }
@@ -76,5 +83,8 @@ body{
     .login_email label,
     .login_senha label{
         font-size: 20px;
-    }    
+    }
+    .login_area{ 
+     height: 56%;
+    }
 }
