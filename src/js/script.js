@@ -37,8 +37,8 @@ async function login() {
       alert(`o email digitado é: ${email_input} e a senha digitada é: ${password_input}`)
     }
 
-    const user = await auth.signInWithEmailAndPassword(email_input, password_input);
-    const uid = user.user.uid;
+    const users = await auth.signInWithEmailAndPassword(email_input, password_input);
+    const uid = users.user.uid;
 
     // Pega dados do Firestore
     const dados = db.collection("consultores").doc(uid);
