@@ -36,4 +36,17 @@ async function login() {
     } else{
       alert(`o email digitado é: ${email_input} e a senha digitada é: ${password_input}`)
     }
+
+    const user = await auth.signInWithEmailAndPassword(email, password)
+    const uid = user.user.uid
+
+    // Pega dados do Firestore
+    const dados = db.collection(consultores).doc(uid)
+    const dadossalvos = await dados.get()
+  
+    if (dadossalvos.exists) {
+      console.log("Dados do usuário:", dadossalvos.data());
+    } else {
+      console.log("Usuário logado, mas sem dados no Firestore!");
+    }
 }
