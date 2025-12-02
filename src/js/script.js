@@ -32,9 +32,7 @@ async function login() {
     password_input = document.querySelector(".password").value;
     let obs = documente.querySelector(".obs")
     if (!email_input || !password_input){
-      alert("digite seu email e senha")
-    } else{
-      alert(`o email digitado é: ${email_input} e a senha digitada é: ${password_input}`)
+       obs.innerHTML = "Escreva o Email e Senha"
     }
 
     try {
