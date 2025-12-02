@@ -8,41 +8,77 @@ let user = "";
 let email_bd = "";
 let password_bd = "";
 
+// configuração Stack Auth e Neon
+const STACK_PROJECT_ID = "894d54c0-8f95-4992-bee2-1070059c83d6";
+const STACK_LOGIN_URL = `https://api.stack-auth.com/api/v1/projects/${STACK_PROJECT_ID}/login`;
+const rest_endpoint = "https://ep-jolly-wildflower-ac6kwkbd.apirest.sa-east-1.aws.neon.tech/neondb/rest/v1/consultores";
+
 //função teste
 let btn = document.querySelector('.login_button');
 btn.addEventListener("click", login);
 
-async function login(){
+// ---------------- FUNÇÃO LOGIN ----------------
+async function login() {
     email_input = document.querySelector('.email').value;
     password_input = document.querySelector(".password").value;
-    let API_KEY = "napi_h1oxultl93gyplfy9bxw6titnf8x46a3jxlk1k2idu3iw2e4m1l32k6ot3cwldz0";
-    let rest_endpoint = "https://ep-jolly-wildflower-ac6kwkbd.apirest.sa-east-1.aws.neon.tech/neondb/rest/v1/consultores";
-
-
 
     console.log("esse é o email digitado: " + email_input)
 
-    try{
+    try {
+        // 1️⃣ Login Stack Auth
+        const loginRes = await fetch(STACK_LOGIN_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email_input,
+                password: password_input
+            })
+        });
+
+        if (!loginRes.ok) {
+            console.log("Email ou senha incorretos no Stack Auth");
+            return false;
+        }
+
+        const loginData = await loginRes.json();
+        const tokenJWT = loginData.access_token;
+        console.log("JWT recebido:", tokenJWT);
+
+        // 2️⃣ Acessando Neon usando o JWT
         const res = await fetch(rest_endpoint, {
             method: "GET",
-            headers:{
-                "Authorization": `Bearer ${API_KEY}`,
+            headers: {
+                "Authorization": `Bearer ${tokenJWT}`,
                 "Content-Type": "application/json"
             }
-        })
+        });
+
+        if (!res.ok) {
+            console.error("Erro ao acessar Neon:", res.status, res.statusText);
+            return false;
+        }
+
         const dados = await res.json();
 
-            
-        if (dados.length === 0) {
-        console.log("Email não encontrado");
-        return false;
-        }   
-        
-        console.log(dados)
-      
+        // 3️⃣ Filtrando usuário logado pelo email e senha
+        const usuario = dados.find(u => u.email === email_input && u.senha === password_input);
+
+        if (!usuario) {
+            console.log("Email ou senha não encontrados na tabela Neon");
+            return false;
+        }
+
+        // 4️⃣ Salvando dados do usuário
+        user = usuario.nome || "";
+        email_bd = usuario.email;
+        password_bd = usuario.senha;
+
+        console.log("Login bem-sucedido! Usuário:", usuario);
 
     } catch (e) {
-    console.error("Erro ao fazer login:", e);
-    return false;
-  }
+        console.error("Erro ao fazer login:", e);
+        return false;
+    }
 }
