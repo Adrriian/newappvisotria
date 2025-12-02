@@ -28,8 +28,8 @@ btn.addEventListener("click", login);
 
 // ---------------- FUNÇÃO LOGIN ----------------
 async function login() {
-    email_input = document.querySelector(".email").value,
-    password_input = document.querySelector(".password").value,
+    email_input = document.querySelector(".email").value;
+    password_input = document.querySelector(".password").value;
 
     if (!email_input || !password_input){
       alert("digite seu email e senha")
