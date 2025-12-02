@@ -62,7 +62,10 @@ body{
     color: white;
     font-size: 20px;
 }
-
+.obs{
+    font-size: 20px;
+    color:#ff5900;
+}
 @media (max-width:650px){ 
     .login_button{
     font-size: 15px;
