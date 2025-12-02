@@ -23,7 +23,7 @@ async function login(){
     console.log("esse é o email digitado: " + email_input)
 
     try{
-        const res = await fetch(`${rest_endpoint}/consultores`, {
+        const res = await fetch(`${rest_endpoint}`, {
             method: "GET",
             headers:{
                 "Authorization": `Bearer ${API_KEY}`,
