@@ -27,7 +27,7 @@ let btn = document.querySelector('.login_button');
 btn.addEventListener("click", login);
 
 // ---------------- FUNÇÃO LOGIN ----------------
-async function login() {
+/*async function login() {
     email_input = document.querySelector(".email").value;
     password_input = document.querySelector(".password").value;
 
@@ -49,4 +49,31 @@ async function login() {
     } else {
       console.log("Usuário logado, mas sem dados no Firestore!");
     }
+}
+*/
+async function login() {
+  email_input = document.querySelector(".email").value;
+  password_input = document.querySelector(".password").value;
+
+  if (!email_input || !password_input){
+    alert("Digite seu email e senha");
+    return;
+  }
+
+  try {
+    const users = await auth.signInWithEmailAndPassword(email_input, password_input);
+    const uid = users.user.uid;
+
+    const dados = db.collection("consultores").doc(uid);
+    const dadossalvos = await dados.get();
+
+    if (dadossalvos.exists) {
+      console.log("Dados do usuário:", dadossalvos.data());
+    } else {
+      console.log("Usuário logado, mas sem dados no Firestore!");
+    }
+  } catch (error) {
+    console.error("Erro ao logar:", error);
+    alert("Erro ao logar: " + error.message);
+  }
 }
