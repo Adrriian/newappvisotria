@@ -31,7 +31,9 @@ async function login() {
     email_input = document.querySelector(".email").value,
     password_input = document.querySelector(".password").value,
 
-    if(email_input === "" || password_input === ""){
+    if (email_input === "" || password_input === ""){
       alert("digite seu email e senha")
-    } else{alert(`o email digitado é: ${email_input} e a senha digitada é ${password_input}`)}
+    } else{
+      alert(`o email digitado é: ${email_input} e a senha digitada é: ${password_input}`)
+    }
 }
