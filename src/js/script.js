@@ -30,28 +30,30 @@ btn.addEventListener("click", login);
 async function login() {
     email_input = document.querySelector(".email").value;
     password_input = document.querySelector(".password").value;
-  
-    let obss = documente.querySelector(".obs")
-    if (!email_input || !password_input){
-       obs.innerHTML = "Escreva o Email e Senha"
+    let obss = document.querySelector(".obs")
+
+
+    if (email_input === "" || password_input === ""){
+       obss.textContent = "Escreva o Email e Senha"
     }
 
     try {
       const users = await auth.signInWithEmailAndPassword(email_input, password_input);
       const uid = users.user.uid;
-  
+
       // Pega dados do Firestore
       const dados = db.collection("consultores").doc(uid);
       const dadossalvos = await dados.get();
+      let adm = dadossalvos.data().adm;
 
-    
-      if (dadossalvos.exists) {
-        console.log("Dados do usuário:", dadossalvos.data());
-      } else {
-        console.log("Usuário logado, mas sem dados no Firestore!");
-      } 
+       if(dadossalvos.exist && adm === "true"){
+        window.location.href = "../pages/adm.html";
+      }else{
+        window.location.href = "../pages/consultor.html";
+      }
+
       } catch (error) {
       console.error("Erro ao logar:", error);
-      alert("Erro ao logar: " + error.message);
+      console.error("Erro ao logar:", error);
       }
 }
