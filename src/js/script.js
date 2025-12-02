@@ -50,7 +50,7 @@ async function login() {
         console.log("Dados do usuário:", dadossalvos.data());
       } else {
         console.log("Usuário logado, mas sem dados no Firestore!");
-      }  catch (error) {
+      } catch (error) {
       console.error("Erro ao logar:", error);
       alert("Erro ao logar: " + error.message);
       }
