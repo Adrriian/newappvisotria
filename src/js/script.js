@@ -45,13 +45,13 @@ async function login() {
       const dados = db.collection("consultores").doc(uid);
       const dadossalvos = await dados.get();
       let adm = dadossalvos.data().adm;
-
-         
-     if (dadossalvos.exists && adm === "true") {
+      
+      if (dadossalvos.exists && adm === "true") {
         window.location.href = "src/pages/adm.html";
       } else {
         window.location.href = "src/pages/consultor.html";
       }
+
 
       } catch (error) {
       console.error("Erro ao logar:", error);
