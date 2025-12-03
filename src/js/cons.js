@@ -29,9 +29,10 @@ function openmenu(){
     }else{
         nav.style.width = "250px"
     }
-}
+};
 
 function vis(){
     window.location.href = "../pages/vistoria.html"
 }
+
 
