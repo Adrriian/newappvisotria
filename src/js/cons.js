@@ -16,10 +16,10 @@ const db = firebase.firestore();
 // variaveis 
 let btn = document.querySelector(".menu_bar")
 let nav = document.querySelector("nav")
-let rota2 = document.querySelector(".a2")
+let via = document.querySelector(".a2")
 
 //eventos
-rota2.addEventListener("click", vis);
+via.addEventListener('click', vis)
 btn.addEventListener("click", openmenu);
 //função open menu
 function openmenu(){
@@ -29,11 +29,9 @@ function openmenu(){
     }else{
         nav.style.width = "250px"
     }
-};
+}
 
 function vis(){
     window.location.href = "../pages/vistoria.html"
 }
-
-
 
