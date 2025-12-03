@@ -47,9 +47,9 @@ async function login() {
       let adm = dadossalvos.data().adm;
       
       if (dadossalvos.exists && adm === "true") {
-        window.location.href = "src/pages/adm.html";
+        window.location.href = "src/pages_adm/adm.html";
       } else {
-        window.location.href = "src/pages/consultor.html";
+        window.location.href = "src/pages_adm/consultor.html";
       }
 
 
