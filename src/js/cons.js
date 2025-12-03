@@ -20,10 +20,6 @@ let rota2 = document.querySelector(".a2")
 
 //eventos
 
-rota2.addEventListener('click', () => {
-    window.location.href = "../pages/vistoria.html"
-});
-
 btn.addEventListener("click", openmenu);
 //função open menu
 function openmenu(){
@@ -34,3 +30,8 @@ function openmenu(){
         nav.style.width = "250px"
     }
 }
+
+rota2.addEventListener('click', () => {
+    window.location.href = "../pages/vistoria.html"
+});
+
