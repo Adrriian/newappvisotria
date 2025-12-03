@@ -99,7 +99,7 @@ nav{
     border-radius: 5px;    
 }
 .photo_area{
-    height: dvh;
+    padding: 10px;
     display: flex;
     flex-direction: column;
 }
@@ -107,7 +107,13 @@ nav{
     display: grid;
     grid-template-columns: repeat(3,1fr);
 }
-
+.photo_text{
+    display: flex;
+    gap: 5px;
+}
+.photo_text h1{
+    font-size: 20px;
+}
 .photo_area2{
     display: grid;
     grid-template-columns: repeat(5,1fr);
@@ -116,7 +122,7 @@ nav{
     border: 4px solid #ff5900;
     border-radius: 5px;
     padding: 10px;
-    height: 400px;
+    height: 200px;
     overflow-y: scroll;
     overflow-x: hidden;
 }
@@ -126,11 +132,82 @@ nav{
 }
 
 .button_dw{
-    width: 10%;
+    width: 20%;
     border-radius: 5px;
     margin-top: 10px;
     background-color: #222e5a;
     color: #ff5900;
-    padding: 20px;
+    padding: 10px;
     text-align: center;
+}
+@media (max-width:941px){
+    .photo_text h1 {
+    font-size: 15px;
+}
+}
+@media (max-width:769px){
+    .photo_text h1 {
+    font-size: 13px;
+}
+}
+@media (max-width:686px){
+    .photo_area2{
+
+    grid-template-columns: repeat(4,1fr);
+    
+}
+    .photo_text h1 {
+    font-size: 11px;
+}
+.button_dw {
+    padding: 10px;
+    font-size: 15px;
+}
+}
+@media (max-width:580px){
+    .photo_area2{
+
+    grid-template-columns: repeat(3,1fr);
+    
+}
+    .photo_text h1 {
+    font-size: 11px;
+}
+.button_dw {
+    width: 50%;
+}
+.photo_title{
+    display: grid;
+    grid-template-columns: repeat(1,1fr);
+}
+}
+@media (max-width:481px){
+    .photo_area2{
+    grid-template-columns: repeat(2,1fr);
+    
+}
+}
+@media (max-width:401px){
+.pesquisa_area label {
+    font-size: 20px;
+    flex-direction: column;
+}
+.pesquisar_input input{
+    width: 100px;
+    padding: 5px;
+}
+.pesquisar_input img {
+    width: 25px;
+}
+}
+
+@media (max-width:321px){
+.photo_area2{
+    grid-template-columns: repeat(2,1fr);
+    
+}
+.button_dw {
+    font-size: 10px;
+    padding: 7px;
+}
 }
