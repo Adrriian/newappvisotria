@@ -1,0 +1,134 @@
+body{
+    padding: 0;
+    height: 0;
+    box-sizing: border-box;
+}
+*{
+    font-family: "Inter",Georgia, 'Times New Roman', Times, serif;
+    color: #ff5900;
+}
+li{
+    list-style: none;
+}
+nav{
+    background-color: #222e5a;
+    top: 0;
+    left: 0;  /* Começa escondida */
+    width: 70px;
+    height: 100%;
+    z-index: 999;
+    margin: 0 0 0 ;
+    padding: 0;
+    position: fixed;
+    overflow: hidden;
+    transition: all 1s ease;
+}
+
+.menu_area{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0 0 10px;
+    cursor: pointer;
+}
+.menu_bar{
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+.menu_bar_line{
+    background-color: #ff5900;
+    width: 40px;
+    height: 5px;
+}
+.menu_link_area{
+    padding-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 200px;
+    margin-left: 12px;
+}
+
+.menu_link{
+    display: flex;
+    gap:20px
+}
+.link_img{
+    width: 20px;
+}
+.link_text{
+    margin-left: 15px;
+    text-decoration: none;
+    font-size: 15px;
+}
+.section{
+    margin-left: 100px;
+}
+.cduser_area{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.user_title{
+    padding-top: 30px;
+}
+.dados_area2{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 20px;
+    background-color: #222e5a;
+    border: 2px solid #ff5900;
+    border-radius: 5px;
+    padding: 20px;
+}
+.dados_cd{
+    display: flex;
+    flex-direction: column;
+}
+.dados_cd h1{
+    font-size: 15px;
+}
+.input{
+    width: 100px;
+    outline: none;
+    padding: 5px;
+    border: 2px solid #ff5900;
+    border-radius: 5px;
+}
+.dados_cd input::placeholder{
+    color: #ff5900;
+}
+.adm_area{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.adm_true,
+.adm_false{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.button_dw,
+.button_dw2{
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #222e5a;
+    color: #ff5900;
+    padding: 10px;
+    text-align: center;
+}
+@media (max-width:588px){
+    .button_dw{
+        width: 150px;
+    }
+}
+@media (max-width:426px){
+    .dados_area2 {
+    grid-template-columns: repeat(1, 1fr);}
+    .user_title h1{
+        font-size: 15px;
+    }
+}

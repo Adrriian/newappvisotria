@@ -1,0 +1,343 @@
+:root {
+  --fundo: #222e5a;
+  --botao: #ff5900;
+  --texto: #fff;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 16px;
+}
+
+/* Overlay modal (andar 2) */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-overlay .modal-content {
+  background: #fff;
+  width: 80%; height: 80%;
+  border-radius: 12px;
+  padding: 16px;
+  box-sizing: border-box;
+  display: none;
+  flex-direction: column;
+  justify-content:flex-start;
+  color: #000;
+}
+
+.modal-overlay .modal-content.active {
+  display: flex;
+}
+.modal-instrucoes{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.img-instrucoes,
+.fotos-comparacao{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 10px;
+}
+.img-details p{
+  font-weight: bold;
+  color: green;
+}
+.img-details2 p{
+  font-weight: bold;
+  color: red;
+}
+.img-details img,
+.img-details2 img{
+  width: 200px;
+  height: 200px;
+}
+.selectcar,
+.selectop,
+.result{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.opcoes-veiculo,
+.opcoes2{
+  display: flex;
+  flex-direction: column;
+}
+.foto-box img{
+  width: 200px;
+  border-radius: 10px;
+}
+.foto-referencia{
+  width: 200px;
+}
+.ft_rf{
+  width: 400px;
+  border-radius: 10px;
+}
+button {
+  padding: 10px 16px;
+  background: var(--botao);
+  border: none;
+  border-radius: 8px;
+  color: var(--texto);
+  cursor: pointer;
+  margin: 8px;
+}
+.button {
+  padding: 10px 16px;
+  background: var(--botao);
+  border: none;
+  border-radius: 8px;
+  color: var(--texto);
+  cursor: pointer;
+  margin: 8px;
+  text-decoration: none;
+}
+.opcoes-veiculo button, .lista-fotos button {
+  margin: 8px;
+}
+
+/* Câmera (andar 1) */
+#camera-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#camera-container video {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 8px;
+}
+
+.foto-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 8px;
+}
+
+.botoes-resultado {
+  margin-top: 16px;
+}
+
+/* Instruções */
+.img-instrucoes {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.img-instrucoes div {
+  text-align: center;
+}
+.modal-refente,
+.escolha_fotos{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.referencia-img{
+  width: 300px;
+}
+.escolha_fotos{
+  overflow-y: scroll;
+}
+#modal-loading {
+  display: none;
+  position: fixed;
+  top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.loading-box {
+  width: 150px;
+  height: 150px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+}
+.loading-circle {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ccc;
+  border-top-color: #4caf50;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+.lista-fotos{
+  overflow-y: scroll;
+  width: 90%;
+}
+label{
+  color: #ff5900;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+
+}
+@media (max-width: 660px) {
+.img-details img,
+.img-details2 img,
+.foto-box img{
+  width: 100px;
+  height: 100px;
+}
+.ft_rf{
+  width: 300px;
+  border-radius: 10px;
+}
+}
+@media (max-width: 480px) {
+  button {
+    width: 90%;
+  }
+  .modal-overlay .modal-content {
+    width: 90%;
+    height: 90%;
+  }
+  .ft_rf{
+  width: 250px;
+  border-radius: 10px;
+}
+}
+@media (max-width: 320px) {
+.img-instrucoes,
+.fotos-comparacao{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+.img-details img,
+.img-details2 img,
+.foto-box img{
+  width: 60px;
+  height: 60px;
+}
+.ft_rf{
+  width: 200px;
+  border-radius: 10px;
+}
+}
+
+/* ====== RESPONSIVIDADE REAL PARA AS IMAGENS ====== */
+
+img,
+.ft_rf,
+.foto-box img,
+.img-details img,
+.img-details2 img,
+.referencia-img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Fotos que eram grandes demais */
+.ft_rf {
+  max-width: 280px;
+}
+
+.referencia-img {
+  max-width: 220px;
+}
+
+/* Landscape (celular deitado) */
+@media (orientation: landscape) {
+
+  .img-details img,
+  .img-details2 img,
+  .foto-box img {
+    max-width: 100px;
+  }
+
+  .ft_rf {
+    max-width: 130px;
+  }
+
+  .referencia-img {
+    max-width: 100px;
+  }
+
+  /* Evita quebra dos grids em modo deitado */
+  .img-instrucoes,
+  .fotos-comparacao {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .modal-content {
+    height: auto;
+    max-height: 90dvh;
+    overflow-y: auto;
+  }
+  #modal-resultado .result {
+    padding: 4px;
+    gap: 4px;
+  }
+
+  #modal-resultado h2 {
+    margin: 2px 0;
+    font-size: 16px;
+  }
+
+  #modal-resultado .fotos-comparacao {
+    gap: 4px;
+    padding: 2px;
+  }
+
+  #modal-resultado .foto-box {
+    margin: 2px 0;
+  }
+
+  #modal-resultado .foto-box h3 {
+    margin: 2px 0;
+    font-size: 12px;
+  }
+
+  #modal-resultado img {
+    max-width: 100px; /* pode ajustar se quiser maior ou menor */
+  }
+
+  #modal-resultado .botoes-resultado {
+    margin-top: 4px;
+    gap: 6px;
+  }
+
+  #modal-resultado button {
+    margin: 2px 0;
+    padding: 6px 10px; /* botões menores */
+    font-size: 14px;
+  }
+  
+#camera-container video {
+   max-width: 250px; /* ajuste o tamanho */
+}
+}
