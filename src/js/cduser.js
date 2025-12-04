@@ -116,7 +116,7 @@ async function cadastrar() {
       adm,
       criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
 
-      alert("usuario Criado)
+      alert("usuario Criado")
     });
 
   } catch (error) {
@@ -124,4 +124,5 @@ async function cadastrar() {
 
   }
 }
+
 
