@@ -52,7 +52,7 @@ async function gerar() {
 
   // gerar link para o cliente
   // gerar link para o cliente
-   const linkFinal = `https://newappvistoria.netlify.app/src/pages/vistoria=${idGerado}`;
+   const linkFinal = `https://newappvistoria.netlify.app/src/pages/vistoria.html?vistoria=${idGerado}`;
 
   // enviar mensagem via WhatsApp
   let texto = encodeURIComponent(`Olá! Preciso que você realize a vistoria do veículo. Acesse o link abaixo:\n${linkFinal}`);
@@ -61,3 +61,4 @@ async function gerar() {
   console.log("Vistoria criada:", idGerado);
 
 }
+
