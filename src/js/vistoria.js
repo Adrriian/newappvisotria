@@ -61,7 +61,7 @@ const fotosCarro = [
   { nome: "Espelho Dianteiro 2", ref: "../images/imgvistoria/carros/espelho2.jpeg" },
   { nome: "Traseira", ref: "../images/imgvistoria/carros/traseira.jpeg" },
   { nome: "Traseira lado 1", ref: "../images/imgvistoria/carros/traseiralado1.jpeg" },
-  { nome: "Farol Traseiro 1", ref: "../images/imgvistoria/carros/faroltraseira1.jpeg" },
+  { nome: "Farol Traseiro 1", ref: "../images/imgvistoria/carros/faroltraseiro1.jpeg" },
   { nome: "Pneu Traseiro 1", ref: "../images/imgvistoria/carros/pneutraseiro1.jpeg" },
   { nome: "Traseira lado 2", ref: "../images/imgvistoria/carros/traseiralado2.jpeg" },
   { nome: "Farol Traseiro 2", ref: "../images/imgvistoria/carros/faroltraseira2.jpeg" },
@@ -74,7 +74,7 @@ const fotosCarro = [
 ];
 
 const fotosMoto = [
-  { nome: "Frente", ref:"img/moto/frente.JPEG" },
+  { nome: "Frente", ref:"../images/imgvistoria/moto/frente.JPEG" },
   { nome: "Frente Lado 1", ref: "../images/imgvistoria/moto/frentelado1.JPEG" },
   { nome: "Frente lado 2", ref: "../images/imgvistoria/moto/frentelado2.JPEG" },
   { nome: "Pneu Da frente", ref: "../images/imgvistoria/moto/pneufrente.JPEG" },
