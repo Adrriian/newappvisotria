@@ -17,6 +17,7 @@ const btn = document.querySelector(".menu_bar");
 const nav = document.querySelector("nav");
 const rota1 = document.querySelector(".a1");
 const rota2 = document.querySelector(".a2");
+const rota2 = document.querySelector(".a3");
 const pesquisa = document.querySelector(".pesquisa");
 const busca = document.querySelector(".busca");
 const nomeClienteEl = document.querySelector(".name");
@@ -32,6 +33,10 @@ rota1.addEventListener('click', () => {
 });
 
 rota2.addEventListener('click', () => {
+    window.location.href = "../pages/link.html";
+});
+
+rota3.addEventListener('click', () => {
     window.location.href = "../pages/link.html";
 });
 
@@ -135,4 +140,5 @@ async function baixar() {
         saveAs(content, "fotos_vistoria.zip");
     });
 }
+
 
