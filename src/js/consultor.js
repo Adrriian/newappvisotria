@@ -109,7 +109,7 @@ async function baixar() {
         return;
     }
 
-    const zip = new JSZip();
+    const zips = new JSZip();
 
     // Percorre todas as imagens e adiciona ao zip
     for (const img of imagens) {
@@ -120,14 +120,14 @@ async function baixar() {
 
             // Nome do arquivo dentro do zip
             const nomeArquivo = img.alt ? img.alt.replace(/\s+/g, "_") + ".jpg" : url.split("/").pop();
-            zip.file(nomeArquivo, blob);
+            zips.file(nomeArquivo, blob);
         } catch (error) {
             console.error("Erro ao baixar imagem:", img.src, error);
         }
     }
 
     // Gera o ZIP e faz download
-    zip.generateAsync({ type: "blob" }).then(function(content) {
+    zips.generateAsync({ type: "blob" }).then(function(content) {
         saveAs(content, "fotos_vistoria.zip");
     });
 }
