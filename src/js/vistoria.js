@@ -18,7 +18,7 @@ const db = firebase.firestore();
 
 // ----------------- IMGBB -----------------
 async function enviarParaImgBB(base64, nomeFoto) {
-  const apiKey = "5c298eb2a1382aeb9277e4da5696b77d";
+  const apiKey = "0622c9e1bc2eaa66e70fb3c76a6c2a11";
   const base64Limpo = base64.split(",")[1];
 
   const formData = new FormData();
