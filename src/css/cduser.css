@@ -95,6 +95,8 @@ nav{
     padding: 5px;
     border: 2px solid #ff5900;
     border-radius: 5px;
+}
+.plate{
     text-transform: uppercase;
 }
 .dados_cd input::placeholder{
