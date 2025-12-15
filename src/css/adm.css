@@ -85,6 +85,7 @@ nav{
     border-radius: 5px;
     width: 200px;
     padding: 10px;
+    text-transform: uppercase;
 }
 .pesquisar_input input::placeholder{
     color: #ff5900;
@@ -222,4 +223,5 @@ nav{
     padding: 7px;
 }
 }
+
 
