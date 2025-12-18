@@ -91,11 +91,24 @@ function exibirVistoria(vistoria) {
 
     containerFotos.innerHTML = ""; // limpa fotos antigas
     vistoria.fotos.forEach(foto => {
+        //div
+        const card = document.createElement("div");
+        card.classList.add("card");
+        //img                                   
         const img = document.createElement("img");
         img.src = foto.url;
         img.alt = foto.nome || foto.nomeArquivo || "";
         img.classList.add("photo_quadrada"); // opcional, para estilizar
-        containerFotos.appendChild(img);
+        //h1
+        const h1 = document.createElement("h1");
+        h1.textContent = foto.nome || foto.nomeArquivo || "";
+        h1.classList.add("h1_vistoria");
+        
+        // monta a estrutura
+        card.appendChild(img);
+        card.appendChild(h1);
+        
+        containerFotos.appendChild(card);
     });
 }
 
