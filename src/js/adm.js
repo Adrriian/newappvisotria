@@ -107,7 +107,7 @@ function exibirVistoria(vistoria) {
         h1.textContent = foto.nome || foto.nomeArquivo || "";
         h1.classList.add("h1_vistoria");
       
-        containerFotos.appendChild(img);
+        containerFotos.appendChild(img,h1, card);
     });
 }
 
@@ -143,6 +143,7 @@ async function baixar() {
         saveAs(content, "fotos_vistoria.zip");
     });
 }
+
 
 
 
