@@ -15,7 +15,7 @@ body{
     align-items: center;     /* Centraliza vertical */
 }
 .login_area{ 
-    width: 50%;
+    width: 30%;
     height: 50%;
     display: flex;
     flex-direction: column;
