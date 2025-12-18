@@ -21,7 +21,7 @@ let img_password = document.queryselector(".img_passord");
 const btn = document.querySelector('.login_button');
 btn.addEventListener("click", login);
 
-img_password.addEventListerne("click", => (){
+img_password.addEventListerne("click", () =>{
     if(img_password.scr === "src/images/fechado.png"){
         return(img_password.style.width = "300px")
     }
