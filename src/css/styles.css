@@ -47,9 +47,7 @@ body{
     outline: none;
     color: #ff5900;
 }
-.login_senha input{
-     width: 50%;
-}
+
 .login_email input::placeholder,
 .login_senha input::placeholder{
    color: #ff5900;
