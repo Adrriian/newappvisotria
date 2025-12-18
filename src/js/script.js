@@ -22,7 +22,7 @@ const btn = document.querySelector('.login_button');
 btn.addEventListener("click", login);
 
 img_passwords.addEventListener("click", () => {
-    if(img_passwords.scr == "src/images/fechado.png"){
+    if(img_passwords.src == "src/images/fechado.png"){
         return(img_passwords.style.width = "300px")
     }
 } )
