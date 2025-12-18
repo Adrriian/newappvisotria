@@ -51,9 +51,14 @@ body{
 .login_senha input::placeholder{
    color: #ff5900;
 }
+.show_password{
+    display: flex;
+    align-items: center;
+}
 .img_password{
     width: 30px;
     heigth: 30px;
+    margin-left: -35px;
 }
 .login_button{
     display: flex;
