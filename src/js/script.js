@@ -16,7 +16,7 @@ const db = firebase.firestore();
 // variáveis de armazenamento dos inputs
 let email_input = "";
 let password_input = "";
-let img_password = document.queryselector(".img_passord");
+let img_password = document.querySelector(".img_passord");
 // botão de login
 const btn = document.querySelector('.login_button');
 btn.addEventListener("click", login);
