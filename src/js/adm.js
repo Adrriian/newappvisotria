@@ -106,8 +106,12 @@ function exibirVistoria(vistoria) {
         const h1 = document.createElement("h1");
         h1.textContent = foto.nome || foto.nomeArquivo || "";
         h1.classList.add("h1_vistoria");
-      
-        containerFotos.appendChild(img,h1, card);
+        
+        // monta a estrutura
+        card.appendChild(img);
+        card.appendChild(h1);
+        
+        containerFotos.appendChild(card);
     });
 }
 
