@@ -26,7 +26,7 @@ btn.addEventListener("click", login);
 //function mostrar senha
 img_passwords.addEventListener("click", () => {
     if(img_passwords.src == "src/images/fechado.png"){
-        return(img_passwords.style.width = "300px")
+        img_passwords.style.width = "300px"
     }
 } )
 // ---------------- FUNÇÃO LOGIN ----------------
