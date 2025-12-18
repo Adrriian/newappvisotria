@@ -17,7 +17,7 @@ const db = firebase.firestore();
 let email_input = "";
 let password_input = "";
 //let do mostar senha
-let img_passwords = document.querySelector(".img_passord");
+let img_passwords = document.querySelector(".img_password");
 
 // botão de login
 const btn = document.querySelector('.login_button');
