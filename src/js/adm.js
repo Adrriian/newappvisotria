@@ -95,7 +95,7 @@ function exibirVistoria(vistoria) {
     containerFotos.innerHTML = ""; // limpa fotos antigas
     vistoria.fotos.forEach(foto => {
         //div
-        const card = document.createElement("div);
+        const card = document.createElement("div");
         card.classList.add("card");
         //img                                   
         const img = document.createElement("img");
