@@ -16,11 +16,14 @@ const db = firebase.firestore();
 // variáveis de armazenamento dos inputs
 let email_input = "";
 let password_input = "";
+//let do mostar senha
 let img_passwords = document.querySelector(".img_passord");
+
 // botão de login
 const btn = document.querySelector('.login_button');
 btn.addEventListener("click", login);
 
+//function mostrar senha
 img_passwords.addEventListener("click", () => {
     if(img_passwords.src == "src/images/fechado.png"){
         return(img_passwords.style.width = "300px")
