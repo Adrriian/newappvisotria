@@ -51,6 +51,10 @@ body{
 .login_senha input::placeholder{
    color: #ff5900;
 }
+.img_password{
+    width: 30px;
+    heigth: 30px;
+}
 .login_button{
     display: flex;
     justify-content: center;
