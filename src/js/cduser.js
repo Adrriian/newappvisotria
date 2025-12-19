@@ -43,15 +43,7 @@ button.addEventListener("click", cadastrar)
 rota1.addEventListener('click', () => {
     window.location.href = "../pages/link.html"
 });
-//função de pegar o radio
-let radio_value = "";
-const adm_input = document.querySelectorAll('.adm[name="option"]');
-adm_input.forEach(radio =>{
-  radio.addEventListener("change", ()=>{
-    radio_value = radio
-     console.log(`seu radio é: ` + radio.value);
-  })
-})
+
 //function rota adm.html ou consultor.html
 rota2.addEventListener("click", async () => {
   try {
@@ -109,7 +101,16 @@ async function cadastrar() {
   const email = email_input.value;
   const senha = senha_input.value;
   const telefone = telefone_input.value;
-  const adm = adm_input.value;
+  const adm_valor = "";
+
+  //função de pegar o radio
+  const adm_input = document.querySelectorAll('.adm[name="option"]');
+  adm_input.forEach(radio =>{
+    radio.addEventListener("change", ()=>{
+      adm_valor = radio
+      console.log(`seu radio é: ` + adm_valor);
+    })
+  })
 
   try {
       // 1) cria usuário no Auth
