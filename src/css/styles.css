@@ -76,6 +76,10 @@ body{
     font-size: 20px;
     cursor:pointer; 
 }
+.login_button:hover{
+    background-color: #2a386d;
+
+}
 .obs{
     font-size: 20px;
     color:#ff5900;
