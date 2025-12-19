@@ -44,9 +44,11 @@ rota1.addEventListener('click', () => {
     window.location.href = "../pages/link.html"
 });
 //função de pegar o radio
+let radio_value = "";
 const adm_input = document.querySelectorAll('.adm[name="option"]');
 adm_input.forEach(radio =>{
   radio.addEventListener("change", ()=>{
+    radio_value = radio
      console.log(radio.value);
   })
 })
