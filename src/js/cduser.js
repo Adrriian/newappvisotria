@@ -49,7 +49,7 @@ const adm_input = document.querySelectorAll('.adm[name="option"]');
 adm_input.forEach(radio =>{
   radio.addEventListener("change", ()=>{
     radio_value = radio
-     console.log(radio.value);
+     console.log(`seu radio é: ` + radio.value);
   })
 })
 //function rota adm.html ou consultor.html
