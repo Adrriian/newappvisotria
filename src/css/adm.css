@@ -95,6 +95,9 @@ nav{
     cursor: pointer;
       border-radius: 5px; 
 }
+.busca:hover{
+    background-color: #2a386d;
+}
 .pesquisar_input img{
     width: 40px;
     border-radius: 5px;    
