@@ -100,7 +100,7 @@ function openmenu(){
   adm_input.forEach(radio =>{
     radio.addEventListener("change", ()=>{
       radio_input = radio;
-      console.log(`seu radio é ola: ` + radio_input);
+      console.log(`seu radio é ola: ` + radio_input.value);
     })
   })
 // Funciton cadastrar
