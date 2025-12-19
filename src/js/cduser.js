@@ -95,11 +95,11 @@ function openmenu(){
 }
 
  //função de pegar o radio
-  const radio_input = "";
+  let radio_input = "";
   const adm_input = document.querySelectorAll('.adm[name="option"]');
   adm_input.forEach(radio =>{
     radio.addEventListener("change", ()=>{
-      radio_input = radio.value;
+      radio_input = radio;
       console.log(`seu radio é ola: ` + radio_input);
     })
   })
