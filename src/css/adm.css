@@ -163,6 +163,9 @@ nav{
     padding: 10px;
     text-align: center;
 }
+.button_dw:hover{
+    background-color: #2a386d;
+}
 @media (max-width:941px){
     .photo_text h1 {
     font-size: 15px;
