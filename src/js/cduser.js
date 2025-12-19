@@ -112,6 +112,7 @@ async function cadastrar() {
   const telefone = telefone_input.value;
   const adm = radio_input;
 
+  console.log(adm)
 
   try {
       // 1) cria usuário no Auth
