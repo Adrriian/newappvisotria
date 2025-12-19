@@ -99,12 +99,16 @@ nav{
 .plate{
     text-transform: uppercase;
 }
-.dados_cd input::placeholder{
-    color: #ff5900;
+.dados_cd{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 .adm_area{
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
 }
 .adm_true,
@@ -113,6 +117,7 @@ nav{
     align-items: center;
     gap: 10px;
 }
+.input
 .button_dw,
 .button_dw2{
     margin-top: 20px;
