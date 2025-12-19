@@ -31,7 +31,7 @@ const cpf_input = document.querySelector(".cpf");
 const email_input = document.querySelector(".email");
 const senha_input = document.querySelector(".senha");
 const telefone_input = document.querySelector(".telefone");
-const adm_input = document.querySelector(".adm");
+const adm_input = document.querySelectorAll('.adm[name:"option"]');
 
 //eventos
 btn.addEventListener("click", openmenu)
@@ -43,7 +43,13 @@ button.addEventListener("click", cadastrar)
 rota1.addEventListener('click', () => {
     window.location.href = "../pages/link.html"
 });
+//função de pegar o radio
 
+adm_input.forEach(radio =>{
+  radio.addEventListener("change", ()=>{
+     console.log(radio.value);
+  })
+})
 //function rota adm.html ou consultor.html
 rota2.addEventListener("click", async () => {
   try {
