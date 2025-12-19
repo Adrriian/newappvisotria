@@ -113,7 +113,7 @@ function exibirVistoria(vistoria) {
         // monta a estrutura
         card.appendChild(img);
         card.appendChild(h1_div);
-        card.appendChild(h1);
+        h1_div.appendChild(h1);
         
         containerFotos.appendChild(card);
     });
