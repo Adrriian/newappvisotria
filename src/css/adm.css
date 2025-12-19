@@ -140,8 +140,8 @@ nav{
 }
 .h1_div{
     background-color: #fff;
-    border: 5px solid #222e5a;
-    border-radius: 10px;
+    border: 3px solid #ff5900;
+    border-radius: 5px;
     width: 100%;
     display: flex;
     align-items: center;
