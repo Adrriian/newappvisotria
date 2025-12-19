@@ -97,6 +97,9 @@ function exibirVistoria(vistoria) {
         //div
         const card = document.createElement("div");
         card.classList.add("card");
+        //div que altera o h1
+        const h1_div = document.createElement("div")
+        h1_div.classList.add("h1_div")
         //img                                   
         const img = document.createElement("img");
         img.src = foto.url;
@@ -109,6 +112,7 @@ function exibirVistoria(vistoria) {
         
         // monta a estrutura
         card.appendChild(img);
+        card.appendChild(h1_div);
         card.appendChild(h1);
         
         containerFotos.appendChild(card);
