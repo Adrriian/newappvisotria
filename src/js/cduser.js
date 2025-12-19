@@ -122,7 +122,7 @@ async function cadastrar() {
       email,
       cpf,
       telefone,
-      adm,
+      adm_valor,
       criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
     });
     alert("usuario criado")
