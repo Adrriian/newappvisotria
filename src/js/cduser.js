@@ -108,7 +108,7 @@ async function cadastrar() {
   adm_input.forEach(radio =>{
     radio.addEventListener("change", ()=>{
       adm_valor = radio
-      console.log(`seu radio é: ` + adm_valor);
+      console.log(`seu radio é ola: ` + adm_valor);
     })
   })
 
