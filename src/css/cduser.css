@@ -123,7 +123,7 @@ nav{
     padding: 10px;
     text-align: center;
 }
-.busca:hover{
+.button_dw:hover{
     background-color: #2a386d;
 }
 @media (max-width:588px){
