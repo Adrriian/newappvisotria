@@ -110,7 +110,7 @@ async function cadastrar() {
   const email = email_input.value;
   const senha = senha_input.value;
   const telefone = telefone_input.value;
-  const adm = radio_input.value;
+  const adm = radio_input;
 
   console.log(`ola meu amigo deu certo` + adm)
 
