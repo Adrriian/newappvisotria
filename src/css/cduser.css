@@ -123,7 +123,8 @@ nav{
     padding: 10px;
     text-align: center;
 }
-.button_dw:hover{
+.button_dw:hover,
+.button_dw2:hover{
     background-color: #2a386d;
 }
 @media (max-width:588px){
