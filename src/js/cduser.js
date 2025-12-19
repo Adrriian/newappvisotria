@@ -94,6 +94,15 @@ function openmenu(){
     }
 }
 
+ //função de pegar o radio
+  const radio_input = "";
+  const adm_input = document.querySelectorAll('.adm[name="option"]');
+  adm_input.forEach(radio =>{
+    radio.addEventListener("change", ()=>{
+      radio_input = radio
+      console.log(`seu radio é ola: ` + radio_input);
+    })
+  })
 // Funciton cadastrar
 async function cadastrar() {
   const name = name_input.value;
@@ -101,16 +110,8 @@ async function cadastrar() {
   const email = email_input.value;
   const senha = senha_input.value;
   const telefone = telefone_input.value;
-  const adm_valor = "";
+  const adm = radio_input;
 
-  //função de pegar o radio
-  const adm_input = document.querySelectorAll('.adm[name="option"]');
-  adm_input.forEach(radio =>{
-    radio.addEventListener("change", ()=>{
-      adm_valor = radio
-      console.log(`seu radio é ola: ` + adm_valor);
-    })
-  })
 
   try {
       // 1) cria usuário no Auth
@@ -122,7 +123,7 @@ async function cadastrar() {
       email,
       cpf,
       telefone,
-      adm_valor,
+      adm,
       criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
     });
     alert("usuario criado")
