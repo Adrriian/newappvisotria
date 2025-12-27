@@ -26,7 +26,10 @@ const dw = document.querySelector(".button_dw")
 
 // ====== Eventos ======
 btn.addEventListener("click", openmenu);
-
+//função de aumentar a letra
+pesquisa.addEventListener("input", ()=>{
+    pesquisa.valeu = pesquisa.valuer.toUppercase()
+})
 rota2.addEventListener('click', () => {
     window.location.href = "../pages/link.html";
 });

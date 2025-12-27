@@ -25,6 +25,10 @@ const nav = document.querySelector("nav");
 const rota2 = document.querySelector(".a2");
 btn.addEventListener("click", openmenu);
 
+// função toUppercase
+plate.addEventListener('input', ()=>{
+    plate.value = plate.value.toUpperCase()
+})
 // Função abrir/fechar menu lateral
 function openmenu(){
     nav.style.width = nav.style.width === "250px" ? "70px" : "250px";

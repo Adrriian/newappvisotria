@@ -26,6 +26,10 @@ const dw = document.querySelector(".button_dw")
 
 // ====== Eventos ======
 btn.addEventListener("click", openmenu);
+//função alterando o pesquisa
+pesquisa.addEventListener("input", ()=>{
+    pesquisa.valeu = pesquisa.valuer.toUppercase()
+})
 
 rota1.addEventListener('click', () => {
     window.location.href = "../pages/cadastraruser.html";
