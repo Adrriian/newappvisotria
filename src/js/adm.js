@@ -28,7 +28,7 @@ const dw = document.querySelector(".button_dw")
 btn.addEventListener("click", openmenu);
 //função alterando o pesquisa
 pesquisa.addEventListener('input', ()=>{
-    pesquisa.value = pesquisa.value.toUppercase()
+    pesquisa.value = pesquisa.value.toUpperCase()
 })
 
 rota1.addEventListener('click', () => {
