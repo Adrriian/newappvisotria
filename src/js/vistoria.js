@@ -140,6 +140,8 @@ async function startCamera() {
     const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
     video.srcObject = stream;
     await video.play();
+    ajustarPreviewCamera();
+
   } catch (err) {
     alert("Erro ao acessar a câmera: " + (err.message || err));
     throw err;
@@ -149,18 +151,43 @@ function ajustarPreviewCamera() {
   const video = document.querySelector("#camera-container video");
   if (!video) return;
 
-  if (window.innerWidth > window.innerHeight) {
-    // landscape
+  let angle = 0;
+
+  // Forma moderna (Android + iOS novos)
+  if (screen.orientation && typeof screen.orientation.angle === "number") {
+    angle = screen.orientation.angle;
+  }
+  // Fallback para iOS antigo
+  else if (typeof window.orientation === "number") {
+    angle = window.orientation;
+  }
+
+  /*
+    angle possíveis:
+    0    → portrait normal
+    90   → landscape esquerda
+    -90  → landscape direita
+    180  → portrait invertido
+  */
+
+  if (angle === 90) {
+    // landscape esquerda (CORRETO)
     video.style.transform = "rotate(90deg)";
     video.style.width = "100vh";
-    video.style.maxWidth = "none";
+  } else if (angle === -90 || angle === 270) {
+    // landscape direita (CORRIGE cabeça pra baixo)
+    video.style.transform = "rotate(-90deg)";
+    video.style.width = "100vh";
   } else {
-    // portrait
+    // portrait (corrige ficar de lado)
     video.style.transform = "rotate(0deg)";
     video.style.width = "100%";
-    video.style.maxWidth = "100%";
   }
+
+  video.style.transformOrigin = "center center";
+  video.style.maxWidth = "none";
 }
+
 
 function mostrarFotoAtual() {
   const fotoAtual = fotosLista[indiceFoto];
