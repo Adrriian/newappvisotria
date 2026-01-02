@@ -137,16 +137,80 @@ async function startCamera() {
     if (video.srcObject) {
       video.srcObject.getTracks().forEach(track => track.stop());
     }
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: { ideal: "environment" }
+      },
+      audio: false
+    });
+
     video.srcObject = stream;
     await video.play();
-    ajustarPreviewCamera();
 
   } catch (err) {
-    alert("Erro ao acessar a câmera: " + (err.message || err));
-    throw err;
+    alert("Erro ao acessar a câmera");
+    console.error(err);
   }
 }
+
+/* ===========================
+   PEGA ORIENTAÇÃO DO CELULAR
+=========================== */
+function getOrientationAngle() {
+  if (screen.orientation && typeof screen.orientation.angle === "number") {
+    return screen.orientation.angle;
+  }
+
+  if (typeof window.orientation === "number") {
+    return window.orientation;
+  }
+
+  return 0;
+}
+/* ===========================
+   TIRA FOTO CORRIGIDA
+=========================== */
+function tirarFoto() {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  const angle = getOrientationAngle();
+
+  const vw = video.videoWidth;
+  const vh = video.videoHeight;
+
+  // Define tamanho correto do canvas
+  if (angle === 90 || angle === -90 || angle === 270) {
+    canvas.width = vh;
+    canvas.height = vw;
+  } else {
+    canvas.width = vw;
+    canvas.height = vh;
+  }
+
+  ctx.save();
+
+  // ROTACIONA CONFORME ORIENTAÇÃO
+  if (angle === 90) {
+    ctx.translate(canvas.width, 0);
+    ctx.rotate(Math.PI / 2);
+  } 
+  else if (angle === -90 || angle === 270) {
+    ctx.translate(0, canvas.height);
+    ctx.rotate(-Math.PI / 2);
+  } 
+  else if (angle === 180) {
+    ctx.translate(canvas.width, canvas.height);
+    ctx.rotate(Math.PI);
+  }
+
+  ctx.drawImage(video, 0, 0, vw, vh);
+  ctx.restore();
+
+  return canvas.toDataURL("image/jpeg", 0.9);
+}
+
 function ajustarPreviewCamera() {
   const video = document.querySelector("#camera-container video");
   if (!video) return;
