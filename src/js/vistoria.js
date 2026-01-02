@@ -172,11 +172,31 @@ function tirarFoto() {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  // Sempre gerar foto DEITADA
-  canvas.width = Math.max(vw, vh);
-  canvas.height = Math.min(vw, vh);
+  // Detecta rotação do celular
+  const angle = screen.orientation.angle;
 
-  // Ajuste de escala para preencher
+  // Ajusta canvas conforme rotação
+  if (angle === 90 || angle === -90 || angle === 270) {
+    // Paisagem → gira a foto
+    canvas.width = Math.max(vw, vh);
+    canvas.height = Math.min(vw, vh);
+
+    ctx.save();
+    if (angle === 90) {
+      ctx.translate(canvas.width, 0);
+      ctx.rotate(Math.PI / 2);
+    } else {
+      ctx.translate(0, canvas.height);
+      ctx.rotate(-Math.PI / 2);
+    }
+  } else {
+    // Retrato → mantém vertical
+    canvas.width = Math.max(vw, vh);
+    canvas.height = Math.min(vw, vh);
+    ctx.save();
+  }
+
+  // Mantém corte centralizado e proporção
   const scale = Math.max(
     canvas.width / vw,
     canvas.height / vh
@@ -188,29 +208,10 @@ function tirarFoto() {
   const dx = (canvas.width - dw) / 2;
   const dy = (canvas.height - dh) / 2;
 
-  // Desenha a imagem
   ctx.drawImage(video, dx, dy, dw, dh);
+  ctx.restore();
 
-  /* ==========================
-     DATA E HORA NA FOTO
-  ========================== */
-
-  const agora = new Date();
-  const dataHora = agora.toLocaleString("pt-BR");
-
-  ctx.font = "bold 20px Arial";
-  ctx.fillStyle = "white";
-  ctx.strokeStyle = "black";
-  ctx.lineWidth = 4;
-
-  const padding = 20;
-  const x = padding;
-  const y = canvas.height - padding;
-
-  // Contorno (para leitura em qualquer fundo)
-  ctx.strokeText(dataHora, x, y);
-  ctx.fillText(dataHora, x, y);
-
+  // Retorna foto em Base64
   return canvas.toDataURL("image/jpeg", 0.9);
 }
 
