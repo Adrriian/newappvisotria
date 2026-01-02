@@ -316,7 +316,17 @@ tirarFotoBtn && tirarFotoBtn.addEventListener("click", () => {
     ctx.drawImage(video, -videoWidth / 2, -videoHeight / 2, videoWidth, videoHeight);
     ctx.rotate(Math.PI / 2);
     ctx.translate(-canvas.width / 2, -canvas.height / 2);
-  } else {
+  } else if(videoHeight > videoWidth){
+    canvas.width = videoHeight;
+    canvas.height = videoWidth;
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.drawImage(video, -videoWidth / 2, -videoHeight / 2, videoWidth, videoHeight);
+    ctx.rotate(Math.PI / 2);
+    ctx.translate(-canvas.width / 2, -canvas.height / 2);
+
+  }else{
+
     canvas.width = videoWidth;
     canvas.height = videoHeight;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
