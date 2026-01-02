@@ -1,5 +1,4 @@
-// vistoria.js - completo
-// Envia fotos para ImgBB, salva URLs no Firestore (dentro do documento da vistoria) e redireciona para WhatsApp do consultor
+// vistoria.js - Vistoria com rotação e data/hora
 
 // ----------------- CONFIG FIREBASE -----------------
 const firebaseConfig = {
@@ -39,16 +38,15 @@ async function enviarParaImgBB(base64, nomeFoto) {
   }
 }
 
-// ----------------- PEGAR ID DA VISTORIA VIA URL -----------------
+// ----------------- PEGAR ID DA VISTORIA -----------------
 const urlParams = new URLSearchParams(window.location.search);
 const vistoriaID = urlParams.get('vistoria');
-
 if (!vistoriaID) {
-  alert("Erro: Nenhuma vistoria encontrada na URL. Feche e peça para o consultor enviar o link correto.");
+  alert("Erro: Nenhuma vistoria encontrada na URL.");
   throw new Error("Nenhuma vistoria encontrada");
 }
 
-// ----------------- LISTAS DE REFERÊNCIA (mantive as suas) -----------------
+// ----------------- LISTAS DE REFERÊNCIA -----------------
 const fotosCarro = [
   { nome: "Frente", ref: "../images/imgvistoria/carros/frente.jpeg" },
   { nome: "Frente Lado 1", ref: "../images/imgvistoria/carros/frentelado1.jpeg" },
@@ -89,10 +87,10 @@ const fotosMoto = [
 
 // ----------------- VARIÁVEIS DE EXECUÇÃO -----------------
 let fotosLista = [];
-let fotosLinks = []; // array de base64 das fotos tiradas, índice corresponde ao fotosLista
+let fotosLinks = [];
 let indiceFoto = 0;
 
-// ----------------- ELEMENTOS (assumi que existem no HTML) -----------------
+// ----------------- ELEMENTOS -----------------
 const modalOverlay = document.getElementById("modal-overlay");
 const modais = {
   instrucoes: document.getElementById("instruction"),
@@ -125,8 +123,7 @@ const btnIniciarEspecifica = document.getElementById("btn-iniciar-especifica");
 
 const modalLoading = document.getElementById("modal-loading");
 
-
-// ----------------- FUNÇÕES AUXILIARES -----------------
+// ----------------- FUNÇÕES -----------------
 function mostrarModal(modal) {
   Object.values(modais).forEach(m => m && m.classList.remove("active"));
   if (modal) modal.classList.add("active");
@@ -152,19 +149,18 @@ async function startCamera() {
       video.onloadedmetadata = resolve;
     });
 
+    // AVISO: checar rotação do celular
+    if (!screen.orientation || screen.orientation.type.includes("portrait-primary") === false) {
+      alert("⚠️ Ative a rotação automática do celular para fotos na orientação correta.");
+    }
+
   } catch (err) {
     alert("Erro ao acessar a câmera");
     console.error(err);
   }
 }
 
-
-/* ===========================
-   PEGA ORIENTAÇÃO DO CELULAR
-=========================== */
-
-/* ===========================
-   TIRA FOTO CORRIGIDA*/
+// ----------------- TIRA FOTO COM DATA/HORA E ORIENTAÇÃO -----------------
 function tirarFoto() {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
@@ -172,14 +168,16 @@ function tirarFoto() {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  // Decide a orientação final em retrato
-  const retrato = vh >= vw;
+  // Detecta orientação do celular pelo window
+  const angle = screen.orientation ? screen.orientation.angle : 0;
+  const vertical = angle === 0 || angle === 180;
+  const horizontal = angle === 90 || angle === -90;
 
-  if (retrato) {
+  if (vertical) {
     canvas.width = vw;
     canvas.height = vh;
     ctx.drawImage(video, 0, 0, vw, vh);
-  } else {
+  } else if (horizontal) {
     canvas.width = vh;
     canvas.height = vw;
     ctx.save();
@@ -189,7 +187,7 @@ function tirarFoto() {
     ctx.restore();
   }
 
-  // Inserir data e hora
+  // DATA E HORA
   const agora = new Date();
   const dataHora = agora.toLocaleString("pt-BR", { hour12: false });
   ctx.font = "22px Arial";
@@ -203,29 +201,10 @@ function tirarFoto() {
   ctx.strokeText(dataHora, x, y);
   ctx.fillText(dataHora, x, y);
 
-  // Base64 sem EXIF ainda
-  const base64 = canvas.toDataURL("image/jpeg", 0.9);
-
-  // ===============================
-  // Inserindo EXIF de Orientação
-  // ===============================
-  let zeroth = {};
-  // Orientation = 1 (Normal, sem rotação)
-  zeroth[piexif.ImageIFD.Orientation] = 1;
-
-  const exifObj = { "0th": zeroth };
-  const exifBytes = piexif.dump(exifObj);
-
-  // Insere no JPEG Base64
-  const novoDataUrl = piexif.insert(exifBytes, base64);
-
-  return novoDataUrl;
+  return canvas.toDataURL("image/jpeg", 0.9);
 }
 
-/// termino da função
-
-
-
+// ----------------- MOSTRAR FOTO ATUAL -----------------
 function mostrarFotoAtual() {
   const fotoAtual = fotosLista[indiceFoto];
   tituloFoto.textContent = fotoAtual.nome;
@@ -233,16 +212,13 @@ function mostrarFotoAtual() {
   mostrarModal(modais.foto);
 }
 
-// ----------------- UPLOAD: IMGBB -> FIRESTORE (Opção 1: salva array dentro do documento) -----------------
+// ----------------- UPLOAD -----------------
 async function enviarTodasFotosParaImgBBSalvarFirestore() {
-  // filtra fotos existentes (não nulos)
   const pares = fotosLinks
     .map((base64, i) => ({ base64, meta: fotosLista[i] }))
-    .filter(p => p.base64); // remove fotos não tiradas
+    .filter(p => p.base64);
 
-  if (pares.length === 0) {
-    throw new Error("Nenhuma foto para enviar.");
-  }
+  if (pares.length === 0) throw new Error("Nenhuma foto para enviar.");
 
   const resultados = [];
 
@@ -250,39 +226,22 @@ async function enviarTodasFotosParaImgBBSalvarFirestore() {
     const { base64, meta } = pares[i];
     const nomeOriginal = meta.nome;
     const nomeFormatado = nomeOriginal.toLowerCase().replace(/ /g, "_").replace(/[^\w_]/g, "");
-
-    // envia para ImgBB
     const resp = await enviarParaImgBB(base64, nomeFormatado);
 
     if (resp && resp.success) {
-      resultados.push({
-        nome: nomeOriginal,
-        nomeArquivo: nomeFormatado,
-        url: resp.data.url
-      });
-      console.log(`Foto enviada: ${nomeOriginal} -> ${resp.data.url}`);
+      resultados.push({ nome: nomeOriginal, nomeArquivo: nomeFormatado, url: resp.data.url });
     } else {
-      console.warn(`Erro ao enviar foto ${nomeOriginal}`, resp);
-      resultados.push({
-        nome: nomeOriginal,
-        nomeArquivo: nomeFormatado,
-        url: null,
-        error: resp && resp.error ? resp.error : "erro_desconhecido"
-      });
+      resultados.push({ nome: nomeOriginal, nomeArquivo: nomeFormatado, url: null, error: resp && resp.error });
     }
   }
 
-  // salvar no Firestore dentro do documento da vistoria
   try {
-    // usa arrayUnion para adicionar cada objeto ao array 'fotos'
     await db.collection("vistoria").doc(vistoriaID).update({
       fotos: firebase.firestore.FieldValue.arrayUnion(...resultados),
       status: "finalizada",
       finalizadoEm: firebase.firestore.FieldValue.serverTimestamp()
     });
-  } catch (err) {
-    // se update falhar (ex: documento não existe), faz um set com merge
-    console.warn("update falhou, tentando set merge:", err);
+  } catch {
     await db.collection("vistoria").doc(vistoriaID).set({
       fotos: resultados,
       status: "finalizada",
@@ -293,7 +252,7 @@ async function enviarTodasFotosParaImgBBSalvarFirestore() {
   return resultados;
 }
 
-// ----------------- LOADING FINAL / REDIRECIONAMENTO -----------------
+// ----------------- LOADING E REDIRECIONAMENTO -----------------
 function mostrarLoading() {
   modalOverlay.style.display = "flex";
   modalLoading.style.display = "flex";
@@ -301,72 +260,60 @@ function mostrarLoading() {
   (async () => {
     try {
       const resultadoFinal = await enviarTodasFotosParaImgBBSalvarFirestore();
-      console.log("Resultado final salvo no Firestore:", resultadoFinal);
 
-      // pegar whats do consultor (tenta vários nomes possíveis)
-      const doc = await db.collection('vistoria').doc(vistoriaID).get();
-      const dados = doc.exists ? doc.data() : null;
-
-      const whatsRaw = dados && (dados.whats_consultor || dados.telefoneConsultor || dados.telefone || dados.whatsapp);
       modalLoading.style.display = "none";
-
       alert("Vistoria enviada com sucesso!");
 
+      const doc = await db.collection('vistoria').doc(vistoriaID).get();
+      const dados = doc.exists ? doc.data() : null;
+      const whatsRaw = dados && (dados.whats_consultor || dados.telefoneConsultor || dados.telefone || dados.whatsapp);
       if (whatsRaw) {
         const whatsClean = String(whatsRaw).replace(/\D/g, "");
         const msg = encodeURIComponent("Vistoria concluída! Já enviei as fotos no sistema.");
-        // adiciona código país BR (55) se não tiver (se já tiver 11-13 dígitos com 55 no começo, não duplica)
         const withCountry = whatsClean.startsWith("55") ? whatsClean : `55${whatsClean}`;
         window.location.href = `https://wa.me/${withCountry}?text=${msg}`;
-      } else {
-        console.warn("Número do consultor não encontrado no documento da vistoria. Nenhum redirecionamento feito.");
       }
     } catch (err) {
-      console.error("Erro ao finalizar vistoria:", err);
+      console.error(err);
       modalLoading.style.display = "none";
       alert("Erro ao enviar as fotos. Tente novamente.");
     }
   })();
 }
 
-// ----------------- EVENTOS E LÓGICA DE TIRAR FOTOS (mantive a sua) -----------------
-btnFazerVistoria && btnFazerVistoria.addEventListener("click", () => {
+// ----------------- EVENTOS -----------------
+btnFazerVistoria?.addEventListener("click", () => {
   mostrarModal(modais.veiculo);
-  startCamera().catch(()=>{});
-  localStorage.setItem("vistoriaAcessada", "true");
+  startCamera();
 });
 
 veiculoBtns.forEach(btn => {
   btn.addEventListener("click", () => {
     const tipo = btn.getAttribute("data-veiculo");
-    fotosLista =
-      tipo === "carro" ? fotosCarro :
-      tipo === "moto" ? fotosMoto : fotosCarro;
+    fotosLista = tipo === "carro" ? fotosCarro : tipo === "moto" ? fotosMoto : fotosCarro;
     mostrarModal(modais.modo);
   });
 });
 
-btnIniciarEspecifica && btnIniciarEspecifica.addEventListener("click", () => {
+btnIniciarEspecifica?.addEventListener("click", () => {
   const checkboxes = listaFotosEspecificas.querySelectorAll("input[type=checkbox]:checked");
   if (checkboxes.length === 0) {
     alert("Selecione pelo menos uma foto!");
     return;
   }
-
   fotosLista = Array.from(checkboxes).map(cb => fotosLista[parseInt(cb.value)]);
   fotosLinks = [];
   indiceFoto = 0;
-
   mostrarFotoAtual();
 });
 
-btnTodas && btnTodas.addEventListener("click", () => {
+btnTodas?.addEventListener("click", () => {
   indiceFoto = 0;
   fotosLinks = [];
   mostrarFotoAtual();
 });
 
-btnEspecifica && btnEspecifica.addEventListener("click", () => {
+btnEspecifica?.addEventListener("click", () => {
   listaFotosEspecificas.innerHTML = "";
   fotosLista.forEach((f, i) => {
     const label = document.createElement("label");
@@ -377,41 +324,30 @@ btnEspecifica && btnEspecifica.addEventListener("click", () => {
   mostrarModal(modais.especifica);
 });
 
-irCameraBtn && irCameraBtn.addEventListener("click", () => {
+irCameraBtn?.addEventListener("click", () => {
   modalOverlay.style.display = "none";
   cameraContainer.style.display = "flex";
-  
 });
 
-tirarFotoBtn && tirarFotoBtn.addEventListener("click", () => {
+tirarFotoBtn?.addEventListener("click", () => {
   const dataUrl = tirarFoto();
-
   fotoTiradaImg.src = dataUrl;
   fotosLinks[indiceFoto] = dataUrl;
-
   const fotoAtual = fotosLista[indiceFoto];
   fotoReferenciaResultado.src = fotoAtual.ref || "placeholder.png";
-
-  proximaBtn.textContent =
-    indiceFoto === fotosLista.length - 1
-      ? "Finalizar Vistoria"
-      : "Próxima Foto";
-
+  proximaBtn.textContent = indiceFoto === fotosLista.length - 1 ? "Finalizar Vistoria" : "Próxima Foto";
   modalOverlay.style.display = "flex";
   mostrarModal(modais.resultado);
 });
 
-
-refazerBtn && refazerBtn.addEventListener("click", () => {
+refazerBtn?.addEventListener("click", () => {
   fotosLinks[indiceFoto] = null;
   modalOverlay.style.display = "none";
   cameraContainer.style.display = "flex";
- 
 });
 
-proximaBtn && proximaBtn.addEventListener("click", () => {
+proximaBtn?.addEventListener("click", () => {
   if (indiceFoto === fotosLista.length - 1) {
-    // finaliza: envia as fotos para imgbb, salva no Firestore e redireciona
     mostrarLoading();
   } else {
     indiceFoto++;
@@ -420,13 +356,6 @@ proximaBtn && proximaBtn.addEventListener("click", () => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-  if (localStorage.getItem("vistoriaAcessada")) {
-    startCamera().catch(()=>{});
-    mostrarModal(modais.instrucoes);
-  } else {
-    modalOverlay.style.display = "flex";
-    mostrarModal(modais.instrucoes);
-  }
+  mostrarModal(modais.instrucoes);
+  startCamera();
 });
-
-
