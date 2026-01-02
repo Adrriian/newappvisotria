@@ -308,7 +308,7 @@ img,
 }
 
 
-  .modal-refente, .escolha_fotos {
+  .modal-refente {
             display: grid;
         justify-content: center;
         justify-items: center;
