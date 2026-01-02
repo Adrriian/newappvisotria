@@ -299,6 +299,9 @@ img,
     justify-content: center;
     overflow-x: hidden;
   }
+  .modal-refente, .escolha_fotos {
+    overflow-x: hidden;
+  }
   .foto-box h3{
         font-size: 15px;
   }
