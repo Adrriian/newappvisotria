@@ -308,7 +308,7 @@ tirarFotoBtn && tirarFotoBtn.addEventListener("click", () => {
   const videoWidth = video.videoWidth;
   const videoHeight = video.videoHeight;
 
-  if (videoHeight > videoWidth) {
+  if (videoWidth > videoHeight) {
     canvas.width = videoHeight;
     canvas.height = videoWidth;
     ctx.translate(canvas.width / 2, canvas.height / 2);
