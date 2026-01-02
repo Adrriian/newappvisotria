@@ -176,7 +176,7 @@ function tirarFoto() {
   canvas.width = Math.max(vw, vh);
   canvas.height = Math.min(vw, vh);
 
-  // Centraliza e corta mantendo proporção
+  // Ajuste de escala para preencher
   const scale = Math.max(
     canvas.width / vw,
     canvas.height / vh
@@ -188,10 +188,32 @@ function tirarFoto() {
   const dx = (canvas.width - dw) / 2;
   const dy = (canvas.height - dh) / 2;
 
+  // Desenha a imagem
   ctx.drawImage(video, dx, dy, dw, dh);
+
+  /* ==========================
+     DATA E HORA NA FOTO
+  ========================== */
+
+  const agora = new Date();
+  const dataHora = agora.toLocaleString("pt-BR");
+
+  ctx.font = "bold 28px Arial";
+  ctx.fillStyle = "white";
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 4;
+
+  const padding = 20;
+  const x = padding;
+  const y = canvas.height - padding;
+
+  // Contorno (para leitura em qualquer fundo)
+  ctx.strokeText(dataHora, x, y);
+  ctx.fillText(dataHora, x, y);
 
   return canvas.toDataURL("image/jpeg", 0.9);
 }
+
 
 
 
