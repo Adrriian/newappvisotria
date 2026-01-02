@@ -288,3 +288,24 @@ img,
   object-fit: cover; /* preenche a tela */
   transform: none;   /* NUNCA rotacionar */
 }
+@media(orientation:landscape){
+  .restult{
+    display: grid;
+    grid-template-columns: 350px;
+    align-items: center;
+    justify-content: center;
+  }
+  .foto-box h3{
+        font-size: 15px;
+  }
+  .img, .ft_rf, .foto-box img, .img-details img, .img-details2 img, .referencia-img {
+    max-width: 42%;
+    height: auto;}
+  .botoes-resultado{
+    grid-row: 3 / 3;
+  }
+  .botoes-resultado button{
+    width: 200px;
+    height: 30px;
+  }
+}
