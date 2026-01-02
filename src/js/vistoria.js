@@ -182,8 +182,8 @@ function tirarFoto() {
     ctx.drawImage(video, 0, 0, vw, vh);
   } else {
     // Foto em pé → gira para ficar correta
-    canvas.width = vh;
-    canvas.height = vw;
+    canvas.width = vw;
+    canvas.height = vh;
 
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.rotate(Math.PI / 2);
