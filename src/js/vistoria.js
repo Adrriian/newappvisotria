@@ -177,13 +177,13 @@ function tirarFoto() {
 
   if (landscape) {
     // Foto deitada
-    canvas.width = vw;
-    canvas.height = vh;
+    canvas.width = vh;
+    canvas.height = vw;
     ctx.drawImage(video, 0, 0, vw, vh);
   } else {
     // Foto em pé → gira para ficar correta
-    canvas.width = vw;
-    canvas.height = vh;
+    canvas.width = vh;
+    canvas.height = vw;
 
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.rotate(Math.PI / 2);
