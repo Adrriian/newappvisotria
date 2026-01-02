@@ -251,6 +251,7 @@ function mostrarLoading() {
 
 // ----------------- EVENTOS E LÓGICA DE TIRAR FOTOS (mantive a sua) -----------------
 btnFazerVistoria && btnFazerVistoria.addEventListener("click", () => {
+  alert('ative em seu celular a opção de rotação de tela')
   mostrarModal(modais.veiculo);
   startCamera().catch(()=>{});
   localStorage.setItem("vistoriaAcessada", "true");
