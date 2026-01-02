@@ -172,49 +172,42 @@ function tirarFoto() {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  // Detecta rotação do celular
+  // Detecta orientação do celular
   const angle = screen.orientation.angle;
 
-  // Ajusta canvas conforme rotação
-  if (angle === 90 || angle === -90 || angle === 270) {
-    // Paisagem → gira a foto
-    canvas.width = Math.max(vw, vh);
-    canvas.height = Math.min(vw, vh);
-
-    ctx.save();
-    if (angle === 90) {
-      ctx.translate(canvas.width, 0);
-      ctx.rotate(Math.PI / 2);
-    } else {
-      ctx.translate(0, canvas.height);
-      ctx.rotate(-Math.PI / 2);
-    }
-  } else {
-    // Retrato → mantém vertical
-    canvas.width = Math.max(vw, vh);
-    canvas.height = Math.min(vw, vh);
-    ctx.save();
+  // Aviso se rotação automática estiver bloqueada
+  if (angle === 0 && vw > vh) {
+    // provável paisagem mas bloqueado
+    alert("⚠️ Ative a rotação automática do celular para melhor resultado das fotos.");
   }
 
-  // Mantém corte centralizado e proporção
-  const scale = Math.max(
-    canvas.width / vw,
-    canvas.height / vh
-  );
+  // Sempre girar para retrato (vertical)
+  // Se o celular estiver deitado, giramos a imagem
+  if (vw > vh) {
+    canvas.width = vh;  // largura menor
+    canvas.height = vw; // altura maior
+    ctx.save();
+    ctx.translate(canvas.width / 2, canvas.height / 2);
 
-  const dw = vw * scale;
-  const dh = vh * scale;
+    if (angle === 90 || angle === -90 || angle === 270) {
+      // gira 90 graus
+      ctx.rotate((90 * Math.PI) / 180);
+    } else {
+      // paisagem sem sensor, gira 90 por padrão
+      ctx.rotate((90 * Math.PI) / 180);
+    }
 
-  const dx = (canvas.width - dw) / 2;
-  const dy = (canvas.height - dh) / 2;
+    ctx.drawImage(video, -vw / 2, -vh / 2, vw, vh);
+    ctx.restore();
+  } else {
+    // já em retrato, desenha normalmente
+    canvas.width = vw;
+    canvas.height = vh;
+    ctx.drawImage(video, 0, 0, vw, vh);
+  }
 
-  ctx.drawImage(video, dx, dy, dw, dh);
-  ctx.restore();
-
-  // Retorna foto em Base64
   return canvas.toDataURL("image/jpeg", 0.9);
 }
-
 
 
 
