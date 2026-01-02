@@ -140,32 +140,31 @@ async function startCamera() {
     }
 
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: { ideal: "environment" }
-      },
+      video: { facingMode: { ideal: "environment" } },
       audio: false
     });
 
     video.srcObject = stream;
     await video.play();
-  
+
     await new Promise(resolve => {
-    if (video.videoWidth > 0) return resolve();
-    video.onloadedmetadata = () => resolve();
+      if (video.videoWidth > 0) return resolve();
+      video.onloadedmetadata = resolve;
     });
+
   } catch (err) {
     alert("Erro ao acessar a câmera");
     console.error(err);
   }
 }
 
+
 /* ===========================
    PEGA ORIENTAÇÃO DO CELULAR
 =========================== */
 
 /* ===========================
-   TIRA FOTO CORRIGIDA
-=========================== */
+   TIRA FOTO CORRIGIDA*/
 function tirarFoto() {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
@@ -173,21 +172,21 @@ function tirarFoto() {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  const landscape = vw > vh;
+  const isPortrait = vh > vw;
 
-  if (landscape) {
-    // Foto deitada
-    canvas.width = vh;
-    canvas.height = vw;
-    ctx.drawImage(video, 0, 0, vw, vh);
-  } else {
-    // Foto em pé → gira para ficar correta
+  if (isPortrait) {
+    // Celular em pé → gira para virar deitado
     canvas.width = vh;
     canvas.height = vw;
 
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.rotate(Math.PI / 2);
     ctx.drawImage(video, -vw / 2, -vh / 2, vw, vh);
+  } else {
+    // Celular já deitado → mantém
+    canvas.width = vw;
+    canvas.height = vh;
+    ctx.drawImage(video, 0, 0, vw, vh);
   }
 
   return canvas.toDataURL("image/jpeg", 0.9);
