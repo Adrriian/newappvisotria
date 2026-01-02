@@ -168,24 +168,23 @@ function tirarFoto() {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  // Detecta orientação do celular pelo window
-  const angle = screen.orientation ? screen.orientation.angle : 0;
-  const vertical = angle === 0 || angle === 180;
-  const horizontal = angle === 90 || angle === -90;
+  // FORÇA foto DEITADA (paisagem)
+  canvas.width = Math.max(vw, vh); // largura maior
+  canvas.height = Math.min(vw, vh); // altura menor
 
-  if (vertical) {
-    canvas.width = vw;
-    canvas.height = vh;
-    ctx.drawImage(video, 0, 0, vw, vh);
-  } else if (horizontal) {
-    canvas.width = vh;
-    canvas.height = vw;
-    ctx.save();
+  ctx.save();
+
+  if (vw < vh) {
+    // Se o vídeo estiver em pé, gira 90° para foto deitada
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.rotate(Math.PI / 2);
     ctx.drawImage(video, -vw / 2, -vh / 2, vw, vh);
-    ctx.restore();
+  } else {
+    // Se o vídeo já estiver deitado, desenha normal
+    ctx.drawImage(video, 0, 0, vw, vh);
   }
+
+  ctx.restore();
 
   // DATA E HORA
   const agora = new Date();
@@ -201,8 +200,10 @@ function tirarFoto() {
   ctx.strokeText(dataHora, x, y);
   ctx.fillText(dataHora, x, y);
 
+  // Retorna Base64 da foto deitada
   return canvas.toDataURL("image/jpeg", 0.9);
 }
+
 
 // ----------------- MOSTRAR FOTO ATUAL -----------------
 function mostrarFotoAtual() {
