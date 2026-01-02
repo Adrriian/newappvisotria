@@ -308,29 +308,12 @@ tirarFotoBtn && tirarFotoBtn.addEventListener("click", () => {
   const videoWidth = video.videoWidth;
   const videoHeight = video.videoHeight;
 
-  if (videoWidth > videoHeight) {
-    canvas.width = videoHeight;
-    canvas.height = videoWidth;
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.drawImage(video, -videoWidth / 2, -videoHeight / 2, videoWidth, videoHeight);
-    ctx.rotate(Math.PI / 2);
-    ctx.translate(-canvas.width / 2, -canvas.height / 2);
-  } else if(videoHeight > videoWidth){
-    canvas.width = videoHeight;
-    canvas.height = videoWidth;
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.drawImage(video, -videoWidth / 2, -videoHeight / 2, videoWidth, videoHeight);
-    ctx.rotate(Math.PI / 2);
-    ctx.translate(-canvas.width / 2, -canvas.height / 2);
 
-  }else{
+canvas.width = videoWidth;
+canvas.height = videoHeight;
 
-    canvas.width = videoWidth;
-    canvas.height = videoHeight;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  }
+// desenha direto, sem rotação
+ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
   const now = new Date();
   const dataHora = now.toLocaleString("pt-BR", { hour12: false });
