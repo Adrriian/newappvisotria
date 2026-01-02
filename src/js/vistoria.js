@@ -172,48 +172,26 @@ function tirarFoto() {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  // Ângulo real do celular
-  let angle = 0;
+  // Sempre gerar foto DEITADA
+  canvas.width = Math.max(vw, vh);
+  canvas.height = Math.min(vw, vh);
 
-  if (screen.orientation && typeof screen.orientation.angle === "number") {
-    angle = screen.orientation.angle;
-  } else if (typeof window.orientation === "number") {
-    angle = window.orientation;
-  }
+  // Centraliza e corta mantendo proporção
+  const scale = Math.max(
+    canvas.width / vw,
+    canvas.height / vh
+  );
 
-  // NORMALIZA
-  angle = ((angle % 360) + 360) % 360;
+  const dw = vw * scale;
+  const dh = vh * scale;
 
-  // SEMPRE GERAR FOTO EM LANDSCAPE (DEITADA PRA DIREITA)
-  if (angle === 90 || angle === -270) {
-    // Landscape direita (ok)
-    canvas.width = vw;
-    canvas.height = vh;
-    ctx.drawImage(video, 0, 0, vw, vh);
+  const dx = (canvas.width - dw) / 2;
+  const dy = (canvas.height - dh) / 2;
 
-  } else if (angle === 270 || angle === -90) {
-    // Landscape esquerda → gira 180
-    canvas.width = vw;
-    canvas.height = vh;
-    ctx.translate(canvas.width, canvas.height);
-    ctx.rotate(Math.PI);
-    ctx.drawImage(video, 0, 0, vw, vh);
-
-  } else {
-    // Portrait → gira para landscape direita
-    canvas.width = vh;
-    canvas.height = vw;
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(Math.PI / 2);
-    ctx.drawImage(video, -vw / 2, -vh / 2, vw, vh);
-  }
+  ctx.drawImage(video, dx, dy, dw, dh);
 
   return canvas.toDataURL("image/jpeg", 0.9);
 }
-
-
-
-
 
 
 
