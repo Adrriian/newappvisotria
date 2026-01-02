@@ -172,21 +172,40 @@ function tirarFoto() {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  const isPortrait = vh > vw;
+  // Ângulo real do celular
+  let angle = 0;
 
-  if (isPortrait) {
-    // Celular em pé → gira para virar deitado
-    canvas.width = vh;
-    canvas.height = vw;
+  if (screen.orientation && typeof screen.orientation.angle === "number") {
+    angle = screen.orientation.angle;
+  } else if (typeof window.orientation === "number") {
+    angle = window.orientation;
+  }
 
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(Math.PI / 2);
-    ctx.drawImage(video, -vw / 2, -vh / 2, vw, vh);
-  } else {
-    // Celular já deitado → mantém
+  // NORMALIZA
+  angle = ((angle % 360) + 360) % 360;
+
+  // SEMPRE GERAR FOTO EM LANDSCAPE (DEITADA PRA DIREITA)
+  if (angle === 90 || angle === -270) {
+    // Landscape direita (ok)
     canvas.width = vw;
     canvas.height = vh;
     ctx.drawImage(video, 0, 0, vw, vh);
+
+  } else if (angle === 270 || angle === -90) {
+    // Landscape esquerda → gira 180
+    canvas.width = vw;
+    canvas.height = vh;
+    ctx.translate(canvas.width, canvas.height);
+    ctx.rotate(Math.PI);
+    ctx.drawImage(video, 0, 0, vw, vh);
+
+  } else {
+    // Portrait → gira para landscape direita
+    canvas.width = vh;
+    canvas.height = vw;
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(Math.PI / 2);
+    ctx.drawImage(video, -vw / 2, -vh / 2, vw, vh);
   }
 
   return canvas.toDataURL("image/jpeg", 0.9);
