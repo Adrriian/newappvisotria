@@ -198,6 +198,7 @@ function tirarFoto() {
 
 
 
+
 function mostrarFotoAtual() {
   const fotoAtual = fotosLista[indiceFoto];
   tituloFoto.textContent = fotoAtual.nome;
