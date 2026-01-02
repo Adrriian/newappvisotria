@@ -312,13 +312,14 @@ img,
   .foto-box h3{
         font-size: 15px;
   }
-  .referencia-img{
-    max-width: 50%;
-  }
+  
   .img, .ft_rf, .foto-box img, .img-details img, .img-details2 img{
     max-width:72%;
     height: auto;}
-
+    
+    .referencia-img{
+    max-width: 40%;
+  }
   .botoes-resultado{
     text-align: center;
     grid-row: 3 / 3;
