@@ -299,6 +299,13 @@ img,
     justify-content: center;
     overflow-x: hidden;
   }
+  .result h2{ 
+    text-align: center;
+  }
+  .img-instrucoes, .fotos-comparacao {
+    grid-template-columns: repeat(1, 1fr);
+   
+}
   .modal-refente, .escolha_fotos {
     overflow-x: hidden;
   }
@@ -306,8 +313,9 @@ img,
         font-size: 15px;
   }
   .img, .ft_rf, .foto-box img, .img-details img, .img-details2 img, .referencia-img {
-    max-width: 42%;
+    max-width:72%;
     height: auto;}
+
   .botoes-resultado{
     text-align: center;
     grid-row: 3 / 3;
