@@ -198,7 +198,7 @@ function tirarFoto() {
   const agora = new Date();
   const dataHora = agora.toLocaleString("pt-BR");
 
-  ctx.font = "bold 28px Arial";
+  ctx.font = "bold 20px Arial";
   ctx.fillStyle = "white";
   ctx.strokeStyle = "black";
   ctx.lineWidth = 4;
