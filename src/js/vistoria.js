@@ -172,13 +172,17 @@ function tirarFoto() {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  // Forçar retrato (vertical)
-  canvas.width = Math.min(vw, vh);  // largura menor
-  canvas.height = Math.max(vw, vh); // altura maior
+  // Se o vídeo está em paisagem e queremos retrato
+  const emPaisagem = vw > vh;
+
+  // Define canvas já no tamanho final corrigido
+  canvas.width = emPaisagem ? vh : vw;
+  canvas.height = emPaisagem ? vw : vh;
+
   ctx.save();
 
-  // Girar 90° se vídeo está em paisagem
-  if (vw > vh) {
+  if (emPaisagem) {
+    // gira 90° para vertical
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.rotate((90 * Math.PI) / 180);
     ctx.drawImage(video, -vw / 2, -vh / 2, vw, vh);
@@ -190,28 +194,27 @@ function tirarFoto() {
   // INSERIR DATA E HORA
   // ----------------------
   const agora = new Date();
-  const dataHora = agora.toLocaleString("pt-BR", { hour12: false }); // Ex: "02/01/2026 12:30:15"
+  const dataHora = agora.toLocaleString("pt-BR", { hour12: false });
 
   ctx.font = "20px Arial";
   ctx.fillStyle = "white";
-  ctx.strokeStyle = "black"; // contorno para melhor contraste
+  ctx.strokeStyle = "black";
   ctx.lineWidth = 2;
 
-  // Posição: canto inferior direito
   const padding = 10;
   const textWidth = ctx.measureText(dataHora).width;
   const x = canvas.width - textWidth - padding;
   const y = canvas.height - padding;
 
-  // Desenha contorno preto
   ctx.strokeText(dataHora, x, y);
-  // Desenha texto branco por cima
   ctx.fillText(dataHora, x, y);
 
   ctx.restore();
 
+  // retorna Base64 já “corrigido”
   return canvas.toDataURL("image/jpeg", 0.9);
 }
+/// termino da função
 
 
 
