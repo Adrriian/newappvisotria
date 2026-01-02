@@ -172,48 +172,56 @@ function tirarFoto() {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  // Se o vídeo está em paisagem e queremos retrato
-  const emPaisagem = vw > vh;
+  // Decide a orientação final em retrato
+  const retrato = vh >= vw;
 
-  // Define canvas já no tamanho final corrigido
-  canvas.width = emPaisagem ? vh : vw;
-  canvas.height = emPaisagem ? vw : vh;
-
-  ctx.save();
-
-  if (emPaisagem) {
-    // gira 90° para vertical
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate((90 * Math.PI) / 180);
-    ctx.drawImage(video, -vw / 2, -vh / 2, vw, vh);
-  } else {
+  if (retrato) {
+    canvas.width = vw;
+    canvas.height = vh;
     ctx.drawImage(video, 0, 0, vw, vh);
+  } else {
+    canvas.width = vh;
+    canvas.height = vw;
+    ctx.save();
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(Math.PI / 2);
+    ctx.drawImage(video, -vw / 2, -vh / 2, vw, vh);
+    ctx.restore();
   }
 
-  // ----------------------
-  // INSERIR DATA E HORA
-  // ----------------------
+  // Inserir data e hora
   const agora = new Date();
   const dataHora = agora.toLocaleString("pt-BR", { hour12: false });
-
-  ctx.font = "20px Arial";
+  ctx.font = "22px Arial";
   ctx.fillStyle = "white";
   ctx.strokeStyle = "black";
-  ctx.lineWidth = 2;
-
+  ctx.lineWidth = 3;
   const padding = 10;
   const textWidth = ctx.measureText(dataHora).width;
   const x = canvas.width - textWidth - padding;
   const y = canvas.height - padding;
-
   ctx.strokeText(dataHora, x, y);
   ctx.fillText(dataHora, x, y);
 
-  ctx.restore();
+  // Base64 sem EXIF ainda
+  const base64 = canvas.toDataURL("image/jpeg", 0.9);
 
-  // retorna Base64 já “corrigido”
-  return canvas.toDataURL("image/jpeg", 0.9);
+  // ===============================
+  // Inserindo EXIF de Orientação
+  // ===============================
+  let zeroth = {};
+  // Orientation = 1 (Normal, sem rotação)
+  zeroth[piexif.ImageIFD.Orientation] = 1;
+
+  const exifObj = { "0th": zeroth };
+  const exifBytes = piexif.dump(exifObj);
+
+  // Insere no JPEG Base64
+  const novoDataUrl = piexif.insert(exifBytes, base64);
+
+  return novoDataUrl;
 }
+
 /// termino da função
 
 
