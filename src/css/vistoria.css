@@ -292,7 +292,7 @@ img,
   .modal-instrucoes {
     overflow-x: hidden;
   }
-  .restult{
+  .result{
     display: grid;
     grid-template-columns: 350px;
     align-items: center;
