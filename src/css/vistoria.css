@@ -317,7 +317,7 @@ img,
     max-width:72%;
     height: auto;}
 
-  #referencia-img{
+  .modal-referente #referencia-img{
     max-width: 40%;
   }
 
