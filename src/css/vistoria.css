@@ -289,6 +289,9 @@ img,
   transform: none;   /* NUNCA rotacionar */
 }
 @media(orientation:landscape){
+  .modal-instrucoes {
+    overflow-x: hidden;
+  }
   .restult{
     display: grid;
     grid-template-columns: 350px;
