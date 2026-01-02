@@ -143,17 +143,6 @@ async function startCamera() {
 
     video.srcObject = stream;
     await video.play();
-
-    await new Promise(resolve => {
-      if (video.videoWidth > 0) return resolve();
-      video.onloadedmetadata = resolve;
-    });
-
-    // AVISO: checar rotação do celular
-    if (!screen.orientation || screen.orientation.type.includes("portrait-primary") === false) {
-      alert("⚠️ Ative a rotação automática do celular para fotos na orientação correta.");
-    }
-
   } catch (err) {
     alert("Erro ao acessar a câmera");
     console.error(err);
@@ -168,9 +157,9 @@ function tirarFoto() {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  // FORÇA foto DEITADA (paisagem)
-  canvas.width = Math.max(vw, vh); // largura maior
-  canvas.height = Math.min(vw, vh); // altura menor
+  // Força foto DEITADA
+  canvas.width = Math.max(vw, vh);
+  canvas.height = Math.min(vw, vh);
 
   ctx.save();
 
@@ -200,9 +189,9 @@ function tirarFoto() {
   ctx.strokeText(dataHora, x, y);
   ctx.fillText(dataHora, x, y);
 
-  // Retorna Base64 da foto deitada
   return canvas.toDataURL("image/jpeg", 0.9);
 }
+
 
 
 // ----------------- MOSTRAR FOTO ATUAL -----------------
