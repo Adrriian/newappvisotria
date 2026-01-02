@@ -145,6 +145,22 @@ async function startCamera() {
     throw err;
   }
 }
+function ajustarPreviewCamera() {
+  const video = document.querySelector("#camera-container video");
+  if (!video) return;
+
+  if (window.innerWidth > window.innerHeight) {
+    // landscape
+    video.style.transform = "rotate(90deg)";
+    video.style.width = "100vh";
+    video.style.maxWidth = "none";
+  } else {
+    // portrait
+    video.style.transform = "rotate(0deg)";
+    video.style.width = "100%";
+    video.style.maxWidth = "100%";
+  }
+}
 
 function mostrarFotoAtual() {
   const fotoAtual = fotosLista[indiceFoto];
@@ -369,3 +385,5 @@ window.addEventListener("DOMContentLoaded", () => {
     mostrarModal(modais.instrucoes);
   }
 });
+window.addEventListener("resize", ajustarPreviewCamera);
+window.addEventListener("orientationchange", ajustarPreviewCamera);
