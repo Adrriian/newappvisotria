@@ -294,6 +294,7 @@ img,
     grid-template-columns: 350px;
     align-items: center;
     justify-content: center;
+    overflow-x: hidden;
   }
   .foto-box h3{
         font-size: 15px;
@@ -302,6 +303,7 @@ img,
     max-width: 42%;
     height: auto;}
   .botoes-resultado{
+    text-align: center;
     grid-row: 3 / 3;
   }
   .botoes-resultado button{
