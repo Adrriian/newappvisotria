@@ -172,43 +172,46 @@ function tirarFoto() {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  // Detecta orientação do celular
-  const angle = screen.orientation.angle;
+  // Forçar retrato (vertical)
+  canvas.width = Math.min(vw, vh);  // largura menor
+  canvas.height = Math.max(vw, vh); // altura maior
+  ctx.save();
 
-  // Aviso se rotação automática estiver bloqueada
-  if (angle === 0 && vw > vh) {
-    // provável paisagem mas bloqueado
-    alert("⚠️ Ative a rotação automática do celular para melhor resultado das fotos.");
-  }
-
-  // Sempre girar para retrato (vertical)
-  // Se o celular estiver deitado, giramos a imagem
+  // Girar 90° se vídeo está em paisagem
   if (vw > vh) {
-    canvas.width = vh;  // largura menor
-    canvas.height = vw; // altura maior
-    ctx.save();
     ctx.translate(canvas.width / 2, canvas.height / 2);
-
-    if (angle === 90 || angle === -90 || angle === 270) {
-      // gira 90 graus
-      ctx.rotate((90 * Math.PI) / 180);
-    } else {
-      // paisagem sem sensor, gira 90 por padrão
-      ctx.rotate((90 * Math.PI) / 180);
-    }
-
+    ctx.rotate((90 * Math.PI) / 180);
     ctx.drawImage(video, -vw / 2, -vh / 2, vw, vh);
-    ctx.restore();
   } else {
-    // já em retrato, desenha normalmente
-    canvas.width = vw;
-    canvas.height = vh;
     ctx.drawImage(video, 0, 0, vw, vh);
   }
 
+  // ----------------------
+  // INSERIR DATA E HORA
+  // ----------------------
+  const agora = new Date();
+  const dataHora = agora.toLocaleString("pt-BR", { hour12: false }); // Ex: "02/01/2026 12:30:15"
+
+  ctx.font = "20px Arial";
+  ctx.fillStyle = "white";
+  ctx.strokeStyle = "black"; // contorno para melhor contraste
+  ctx.lineWidth = 2;
+
+  // Posição: canto inferior direito
+  const padding = 10;
+  const textWidth = ctx.measureText(dataHora).width;
+  const x = canvas.width - textWidth - padding;
+  const y = canvas.height - padding;
+
+  // Desenha contorno preto
+  ctx.strokeText(dataHora, x, y);
+  // Desenha texto branco por cima
+  ctx.fillText(dataHora, x, y);
+
+  ctx.restore();
+
   return canvas.toDataURL("image/jpeg", 0.9);
 }
-
 
 
 
