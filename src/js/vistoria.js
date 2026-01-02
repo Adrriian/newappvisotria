@@ -1,4 +1,5 @@
-// vistoria.js - Vistoria com rotação e data/hora
+// vistoria.js - completo
+// Envia fotos para ImgBB, salva URLs no Firestore (dentro do documento da vistoria) e redireciona para WhatsApp do consultor
 
 // ----------------- CONFIG FIREBASE -----------------
 const firebaseConfig = {
@@ -17,7 +18,7 @@ const db = firebase.firestore();
 
 // ----------------- IMGBB -----------------
 async function enviarParaImgBB(base64, nomeFoto) {
-  const apiKey = "0622c9e1bc2eaa66e70fb3c76a6c2a11";
+  const apiKey = "5c298eb2a1382aeb9277e4da5696b77d";
   const base64Limpo = base64.split(",")[1];
 
   const formData = new FormData();
@@ -38,15 +39,16 @@ async function enviarParaImgBB(base64, nomeFoto) {
   }
 }
 
-// ----------------- PEGAR ID DA VISTORIA -----------------
+// ----------------- PEGAR ID DA VISTORIA VIA URL -----------------
 const urlParams = new URLSearchParams(window.location.search);
 const vistoriaID = urlParams.get('vistoria');
+
 if (!vistoriaID) {
-  alert("Erro: Nenhuma vistoria encontrada na URL.");
+  alert("Erro: Nenhuma vistoria encontrada na URL. Feche e peça para o consultor enviar o link correto.");
   throw new Error("Nenhuma vistoria encontrada");
 }
 
-// ----------------- LISTAS DE REFERÊNCIA -----------------
+// ----------------- LISTAS DE REFERÊNCIA (mantive as suas) -----------------
 const fotosCarro = [
   { nome: "Frente", ref: "../images/imgvistoria/carros/frente.jpeg" },
   { nome: "Frente Lado 1", ref: "../images/imgvistoria/carros/frentelado1.jpeg" },
@@ -87,10 +89,10 @@ const fotosMoto = [
 
 // ----------------- VARIÁVEIS DE EXECUÇÃO -----------------
 let fotosLista = [];
-let fotosLinks = [];
+let fotosLinks = []; // array de base64 das fotos tiradas, índice corresponde ao fotosLista
 let indiceFoto = 0;
 
-// ----------------- ELEMENTOS -----------------
+// ----------------- ELEMENTOS (assumi que existem no HTML) -----------------
 const modalOverlay = document.getElementById("modal-overlay");
 const modais = {
   instrucoes: document.getElementById("instruction"),
@@ -123,7 +125,7 @@ const btnIniciarEspecifica = document.getElementById("btn-iniciar-especifica");
 
 const modalLoading = document.getElementById("modal-loading");
 
-// ----------------- FUNÇÕES -----------------
+// ----------------- FUNÇÕES AUXILIARES -----------------
 function mostrarModal(modal) {
   Object.values(modais).forEach(m => m && m.classList.remove("active"));
   if (modal) modal.classList.add("active");
@@ -135,66 +137,15 @@ async function startCamera() {
     if (video.srcObject) {
       video.srcObject.getTracks().forEach(track => track.stop());
     }
-
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: "environment" } },
-      audio: false
-    });
-
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
     video.srcObject = stream;
     await video.play();
   } catch (err) {
-    alert("Erro ao acessar a câmera");
-    console.error(err);
+    alert("Erro ao acessar a câmera: " + (err.message || err));
+    throw err;
   }
 }
 
-// ----------------- TIRA FOTO COM DATA/HORA E ORIENTAÇÃO -----------------
-function tirarFoto() {
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-
-  const vw = video.videoWidth;
-  const vh = video.videoHeight;
-
-  // Força foto DEITADA
-  canvas.width = Math.max(vw, vh);
-  canvas.height = Math.min(vw, vh);
-
-  ctx.save();
-
-  if (vw < vh) {
-    // Se o vídeo estiver em pé, gira 90° para foto deitada
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(Math.PI / 2);
-    ctx.drawImage(video, -vw / 2, -vh / 2, vw, vh);
-  } else {
-    // Se o vídeo já estiver deitado, desenha normal
-    ctx.drawImage(video, 0, 0, vw, vh);
-  }
-
-  ctx.restore();
-
-  // DATA E HORA
-  const agora = new Date();
-  const dataHora = agora.toLocaleString("pt-BR", { hour12: false });
-  ctx.font = "22px Arial";
-  ctx.fillStyle = "white";
-  ctx.strokeStyle = "black";
-  ctx.lineWidth = 3;
-  const padding = 10;
-  const textWidth = ctx.measureText(dataHora).width;
-  const x = canvas.width - textWidth - padding;
-  const y = canvas.height - padding;
-  ctx.strokeText(dataHora, x, y);
-  ctx.fillText(dataHora, x, y);
-
-  return canvas.toDataURL("image/jpeg", 0.9);
-}
-
-
-
-// ----------------- MOSTRAR FOTO ATUAL -----------------
 function mostrarFotoAtual() {
   const fotoAtual = fotosLista[indiceFoto];
   tituloFoto.textContent = fotoAtual.nome;
@@ -202,13 +153,16 @@ function mostrarFotoAtual() {
   mostrarModal(modais.foto);
 }
 
-// ----------------- UPLOAD -----------------
+// ----------------- UPLOAD: IMGBB -> FIRESTORE (Opção 1: salva array dentro do documento) -----------------
 async function enviarTodasFotosParaImgBBSalvarFirestore() {
+  // filtra fotos existentes (não nulos)
   const pares = fotosLinks
     .map((base64, i) => ({ base64, meta: fotosLista[i] }))
-    .filter(p => p.base64);
+    .filter(p => p.base64); // remove fotos não tiradas
 
-  if (pares.length === 0) throw new Error("Nenhuma foto para enviar.");
+  if (pares.length === 0) {
+    throw new Error("Nenhuma foto para enviar.");
+  }
 
   const resultados = [];
 
@@ -216,22 +170,39 @@ async function enviarTodasFotosParaImgBBSalvarFirestore() {
     const { base64, meta } = pares[i];
     const nomeOriginal = meta.nome;
     const nomeFormatado = nomeOriginal.toLowerCase().replace(/ /g, "_").replace(/[^\w_]/g, "");
+
+    // envia para ImgBB
     const resp = await enviarParaImgBB(base64, nomeFormatado);
 
     if (resp && resp.success) {
-      resultados.push({ nome: nomeOriginal, nomeArquivo: nomeFormatado, url: resp.data.url });
+      resultados.push({
+        nome: nomeOriginal,
+        nomeArquivo: nomeFormatado,
+        url: resp.data.url
+      });
+      console.log(`Foto enviada: ${nomeOriginal} -> ${resp.data.url}`);
     } else {
-      resultados.push({ nome: nomeOriginal, nomeArquivo: nomeFormatado, url: null, error: resp && resp.error });
+      console.warn(`Erro ao enviar foto ${nomeOriginal}`, resp);
+      resultados.push({
+        nome: nomeOriginal,
+        nomeArquivo: nomeFormatado,
+        url: null,
+        error: resp && resp.error ? resp.error : "erro_desconhecido"
+      });
     }
   }
 
+  // salvar no Firestore dentro do documento da vistoria
   try {
+    // usa arrayUnion para adicionar cada objeto ao array 'fotos'
     await db.collection("vistoria").doc(vistoriaID).update({
       fotos: firebase.firestore.FieldValue.arrayUnion(...resultados),
       status: "finalizada",
       finalizadoEm: firebase.firestore.FieldValue.serverTimestamp()
     });
-  } catch {
+  } catch (err) {
+    // se update falhar (ex: documento não existe), faz um set com merge
+    console.warn("update falhou, tentando set merge:", err);
     await db.collection("vistoria").doc(vistoriaID).set({
       fotos: resultados,
       status: "finalizada",
@@ -242,7 +213,7 @@ async function enviarTodasFotosParaImgBBSalvarFirestore() {
   return resultados;
 }
 
-// ----------------- LOADING E REDIRECIONAMENTO -----------------
+// ----------------- LOADING FINAL / REDIRECIONAMENTO -----------------
 function mostrarLoading() {
   modalOverlay.style.display = "flex";
   modalLoading.style.display = "flex";
@@ -250,60 +221,72 @@ function mostrarLoading() {
   (async () => {
     try {
       const resultadoFinal = await enviarTodasFotosParaImgBBSalvarFirestore();
+      console.log("Resultado final salvo no Firestore:", resultadoFinal);
 
-      modalLoading.style.display = "none";
-      alert("Vistoria enviada com sucesso!");
-
+      // pegar whats do consultor (tenta vários nomes possíveis)
       const doc = await db.collection('vistoria').doc(vistoriaID).get();
       const dados = doc.exists ? doc.data() : null;
+
       const whatsRaw = dados && (dados.whats_consultor || dados.telefoneConsultor || dados.telefone || dados.whatsapp);
+      modalLoading.style.display = "none";
+
+      alert("Vistoria enviada com sucesso!");
+
       if (whatsRaw) {
         const whatsClean = String(whatsRaw).replace(/\D/g, "");
         const msg = encodeURIComponent("Vistoria concluída! Já enviei as fotos no sistema.");
+        // adiciona código país BR (55) se não tiver (se já tiver 11-13 dígitos com 55 no começo, não duplica)
         const withCountry = whatsClean.startsWith("55") ? whatsClean : `55${whatsClean}`;
         window.location.href = `https://wa.me/${withCountry}?text=${msg}`;
+      } else {
+        console.warn("Número do consultor não encontrado no documento da vistoria. Nenhum redirecionamento feito.");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Erro ao finalizar vistoria:", err);
       modalLoading.style.display = "none";
       alert("Erro ao enviar as fotos. Tente novamente.");
     }
   })();
 }
 
-// ----------------- EVENTOS -----------------
-btnFazerVistoria?.addEventListener("click", () => {
+// ----------------- EVENTOS E LÓGICA DE TIRAR FOTOS (mantive a sua) -----------------
+btnFazerVistoria && btnFazerVistoria.addEventListener("click", () => {
   mostrarModal(modais.veiculo);
-  startCamera();
+  startCamera().catch(()=>{});
+  localStorage.setItem("vistoriaAcessada", "true");
 });
 
 veiculoBtns.forEach(btn => {
   btn.addEventListener("click", () => {
     const tipo = btn.getAttribute("data-veiculo");
-    fotosLista = tipo === "carro" ? fotosCarro : tipo === "moto" ? fotosMoto : fotosCarro;
+    fotosLista =
+      tipo === "carro" ? fotosCarro :
+      tipo === "moto" ? fotosMoto : fotosCarro;
     mostrarModal(modais.modo);
   });
 });
 
-btnIniciarEspecifica?.addEventListener("click", () => {
+btnIniciarEspecifica && btnIniciarEspecifica.addEventListener("click", () => {
   const checkboxes = listaFotosEspecificas.querySelectorAll("input[type=checkbox]:checked");
   if (checkboxes.length === 0) {
     alert("Selecione pelo menos uma foto!");
     return;
   }
+
   fotosLista = Array.from(checkboxes).map(cb => fotosLista[parseInt(cb.value)]);
   fotosLinks = [];
   indiceFoto = 0;
+
   mostrarFotoAtual();
 });
 
-btnTodas?.addEventListener("click", () => {
+btnTodas && btnTodas.addEventListener("click", () => {
   indiceFoto = 0;
   fotosLinks = [];
   mostrarFotoAtual();
 });
 
-btnEspecifica?.addEventListener("click", () => {
+btnEspecifica && btnEspecifica.addEventListener("click", () => {
   listaFotosEspecificas.innerHTML = "";
   fotosLista.forEach((f, i) => {
     const label = document.createElement("label");
@@ -314,30 +297,62 @@ btnEspecifica?.addEventListener("click", () => {
   mostrarModal(modais.especifica);
 });
 
-irCameraBtn?.addEventListener("click", () => {
+irCameraBtn && irCameraBtn.addEventListener("click", () => {
   modalOverlay.style.display = "none";
   cameraContainer.style.display = "flex";
 });
 
-tirarFotoBtn?.addEventListener("click", () => {
-  const dataUrl = tirarFoto();
+tirarFotoBtn && tirarFotoBtn.addEventListener("click", () => {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  const videoWidth = video.videoWidth;
+  const videoHeight = video.videoHeight;
+
+  if (videoHeight > videoWidth) {
+    canvas.width = videoHeight;
+    canvas.height = videoWidth;
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.drawImage(video, -videoWidth / 2, -videoHeight / 2, videoWidth, videoHeight);
+    ctx.rotate(Math.PI / 2);
+    ctx.translate(-canvas.width / 2, -canvas.height / 2);
+  } else {
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  }
+
+  const now = new Date();
+  const dataHora = now.toLocaleString("pt-BR", { hour12: false });
+  ctx.font = "20px Arial";
+  ctx.fillStyle = "white";
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 2;
+  ctx.strokeText(dataHora, 20, canvas.height - 30);
+  ctx.fillText(dataHora, 20, canvas.height - 30);
+
+  const dataUrl = canvas.toDataURL("image/jpeg");
   fotoTiradaImg.src = dataUrl;
   fotosLinks[indiceFoto] = dataUrl;
+
   const fotoAtual = fotosLista[indiceFoto];
   fotoReferenciaResultado.src = fotoAtual.ref || "placeholder.png";
+
   proximaBtn.textContent = indiceFoto === fotosLista.length - 1 ? "Finalizar Vistoria" : "Próxima Foto";
+
   modalOverlay.style.display = "flex";
   mostrarModal(modais.resultado);
 });
 
-refazerBtn?.addEventListener("click", () => {
+refazerBtn && refazerBtn.addEventListener("click", () => {
   fotosLinks[indiceFoto] = null;
   modalOverlay.style.display = "none";
   cameraContainer.style.display = "flex";
 });
 
-proximaBtn?.addEventListener("click", () => {
+proximaBtn && proximaBtn.addEventListener("click", () => {
   if (indiceFoto === fotosLista.length - 1) {
+    // finaliza: envia as fotos para imgbb, salva no Firestore e redireciona
     mostrarLoading();
   } else {
     indiceFoto++;
@@ -346,6 +361,11 @@ proximaBtn?.addEventListener("click", () => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-  mostrarModal(modais.instrucoes);
-  startCamera();
+  if (localStorage.getItem("vistoriaAcessada")) {
+    startCamera().catch(()=>{});
+    mostrarModal(modais.instrucoes);
+  } else {
+    modalOverlay.style.display = "flex";
+    mostrarModal(modais.instrucoes);
+  }
 });
