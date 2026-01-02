@@ -125,6 +125,7 @@ const btnIniciarEspecifica = document.getElementById("btn-iniciar-especifica");
 
 const modalLoading = document.getElementById("modal-loading");
 
+
 // ----------------- FUNÇÕES AUXILIARES -----------------
 function mostrarModal(modal) {
   Object.values(modais).forEach(m => m && m.classList.remove("active"));
@@ -147,7 +148,11 @@ async function startCamera() {
 
     video.srcObject = stream;
     await video.play();
-
+  
+    await new Promise(resolve => {
+    if (video.videoWidth > 0) return resolve();
+    video.onloadedmetadata = () => resolve();
+    });
   } catch (err) {
     alert("Erro ao acessar a câmera");
     console.error(err);
@@ -157,17 +162,7 @@ async function startCamera() {
 /* ===========================
    PEGA ORIENTAÇÃO DO CELULAR
 =========================== */
-function getOrientationAngle() {
-  if (screen.orientation && typeof screen.orientation.angle === "number") {
-    return screen.orientation.angle;
-  }
 
-  if (typeof window.orientation === "number") {
-    return window.orientation;
-  }
-
-  return 0;
-}
 /* ===========================
    TIRA FOTO CORRIGIDA
 =========================== */
@@ -175,82 +170,33 @@ function tirarFoto() {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
-  const angle = getOrientationAngle();
-
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  // Define tamanho correto do canvas
-  if (angle === 90 || angle === -90 || angle === 270) {
-    canvas.width = vh;
-    canvas.height = vw;
-  } else {
+  const landscape = vw > vh;
+
+  if (landscape) {
+    // Foto deitada
     canvas.width = vw;
     canvas.height = vh;
-  }
+    ctx.drawImage(video, 0, 0, vw, vh);
+  } else {
+    // Foto em pé → gira para ficar correta
+    canvas.width = vh;
+    canvas.height = vw;
 
-  ctx.save();
-
-  // ROTACIONA CONFORME ORIENTAÇÃO
-  if (angle === 90) {
-    ctx.translate(canvas.width, 0);
+    ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.rotate(Math.PI / 2);
-  } 
-  else if (angle === -90 || angle === 270) {
-    ctx.translate(0, canvas.height);
-    ctx.rotate(-Math.PI / 2);
-  } 
-  else if (angle === 180) {
-    ctx.translate(canvas.width, canvas.height);
-    ctx.rotate(Math.PI);
+    ctx.drawImage(video, -vw / 2, -vh / 2, vw, vh);
   }
-
-  ctx.drawImage(video, 0, 0, vw, vh);
-  ctx.restore();
 
   return canvas.toDataURL("image/jpeg", 0.9);
 }
 
-function ajustarPreviewCamera() {
-  const video = document.querySelector("#camera-container video");
-  if (!video) return;
 
-  let angle = 0;
 
-  // Forma moderna (Android + iOS novos)
-  if (screen.orientation && typeof screen.orientation.angle === "number") {
-    angle = screen.orientation.angle;
-  }
-  // Fallback para iOS antigo
-  else if (typeof window.orientation === "number") {
-    angle = window.orientation;
-  }
 
-  /*
-    angle possíveis:
-    0    → portrait normal
-    90   → landscape esquerda
-    -90  → landscape direita
-    180  → portrait invertido
-  */
 
-  if (angle === 90) {
-    // landscape esquerda (CORRETO)
-    video.style.transform = "rotate(90deg)";
-    video.style.width = "100vh";
-  } else if (angle === -90 || angle === 270) {
-    // landscape direita (CORRIGE cabeça pra baixo)
-    video.style.transform = "rotate(-90deg)";
-    video.style.width = "100vh";
-  } else {
-    // portrait (corrige ficar de lado)
-    video.style.transform = "rotate(0deg)";
-    video.style.width = "100%";
-  }
-
-  video.style.transformOrigin = "center center";
-  video.style.maxWidth = "none";
-}
 
 
 function mostrarFotoAtual() {
@@ -407,54 +353,33 @@ btnEspecifica && btnEspecifica.addEventListener("click", () => {
 irCameraBtn && irCameraBtn.addEventListener("click", () => {
   modalOverlay.style.display = "none";
   cameraContainer.style.display = "flex";
+  
 });
 
 tirarFotoBtn && tirarFotoBtn.addEventListener("click", () => {
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  const videoWidth = video.videoWidth;
-  const videoHeight = video.videoHeight;
+  const dataUrl = tirarFoto();
 
-  if (videoHeight > videoWidth) {
-    canvas.width = videoHeight;
-    canvas.height = videoWidth;
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.drawImage(video, -videoWidth / 2, -videoHeight / 2, videoWidth, videoHeight);
-    ctx.rotate(Math.PI / 2);
-    ctx.translate(-canvas.width / 2, -canvas.height / 2);
-  } else {
-    canvas.width = videoWidth;
-    canvas.height = videoHeight;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  }
-
-  const now = new Date();
-  const dataHora = now.toLocaleString("pt-BR", { hour12: false });
-  ctx.font = "20px Arial";
-  ctx.fillStyle = "white";
-  ctx.strokeStyle = "black";
-  ctx.lineWidth = 2;
-  ctx.strokeText(dataHora, 20, canvas.height - 30);
-  ctx.fillText(dataHora, 20, canvas.height - 30);
-
-  const dataUrl = canvas.toDataURL("image/jpeg");
   fotoTiradaImg.src = dataUrl;
   fotosLinks[indiceFoto] = dataUrl;
 
   const fotoAtual = fotosLista[indiceFoto];
   fotoReferenciaResultado.src = fotoAtual.ref || "placeholder.png";
 
-  proximaBtn.textContent = indiceFoto === fotosLista.length - 1 ? "Finalizar Vistoria" : "Próxima Foto";
+  proximaBtn.textContent =
+    indiceFoto === fotosLista.length - 1
+      ? "Finalizar Vistoria"
+      : "Próxima Foto";
 
   modalOverlay.style.display = "flex";
   mostrarModal(modais.resultado);
 });
 
+
 refazerBtn && refazerBtn.addEventListener("click", () => {
   fotosLinks[indiceFoto] = null;
   modalOverlay.style.display = "none";
   cameraContainer.style.display = "flex";
+ 
 });
 
 proximaBtn && proximaBtn.addEventListener("click", () => {
@@ -476,5 +401,5 @@ window.addEventListener("DOMContentLoaded", () => {
     mostrarModal(modais.instrucoes);
   }
 });
-window.addEventListener("resize", ajustarPreviewCamera);
-window.addEventListener("orientationchange", ajustarPreviewCamera);
+
+
